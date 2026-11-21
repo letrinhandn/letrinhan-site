@@ -1,6 +1,8 @@
-# Le Trinh An — personal site
+# Le Tri Nhan
 
-Pixel-art burgundy landing page. React + Vite. Deployed on Vercel.
+Personal pixel-art landing page for Lê Trí Nhân.
+
+React and Vite. Deployed on Vercel: [letrinhan-site.vercel.app](https://letrinhan-site.vercel.app/)
 
 ## Local
 
@@ -18,7 +20,7 @@ npm run preview
 
 ## Deploy
 
-Connect this GitHub repo to [Vercel](https://vercel.com) (Framework Preset: Vite). Or:
+Connect this GitHub repo to [Vercel](https://vercel.com) (Framework Preset: Vite), or run:
 
 ```bash
 npx vercel

@@ -39,7 +39,7 @@ export const appWorks: LocalizedWork[] = [
     title: { vi: 'Terminal Trade', en: 'Terminal Trade' },
     blurb: {
       vi: 'Nền tảng giao dịch kiểu Bloomberg Terminal',
-      en: 'Bloomberg Terminal–inspired trading platform',
+      en: 'Bloomberg Terminal inspired trading platform',
     },
     href: 'https://terminal-trade-iota.vercel.app',
     icon: '/terminal-trade-logo.svg',
@@ -86,11 +86,11 @@ export const researchWorks: LocalizedWork[] = [
       en: 'Mobilising financial resources from crypto-asset markets in Vietnam: Tax policy and pricing responses on peer-to-peer markets',
     },
     blurb: {
-      vi: 'Hội thảo Khoa học Quốc gia — Khơi thông và sử dụng hiệu quả các nguồn lực cho phát triển kinh tế trong kỷ nguyên mới của Việt Nam',
-      en: 'National Scientific Conference — Mobilising and using resources for economic development in Vietnam’s new era',
+      vi: 'Hội thảo Khoa học Quốc gia: Khơi thông và sử dụng hiệu quả các nguồn lực cho phát triển kinh tế trong kỷ nguyên mới của Việt Nam',
+      en: 'National Scientific Conference: Mobilising and using resources for economic development in Vietnam’s new era',
     },
     href: 'https://www.researchgate.net/publication/415322921_Khoi_thong_nguon_luc_tai_chinh_tu_thi_truong_tai_san_ma_hoa_tai_Viet_Nam_Chinh_sach_thue_va_phan_ung_dinh_gia_tren_thi_truong_giao_dich_ngang_hang',
-    badge: { vi: '2026 — Bài hội thảo', en: '2026 — Conference paper' },
+    badge: { vi: '2026: Bài hội thảo', en: '2026: Conference paper' },
     kind: 'paper',
   },
   {
@@ -100,11 +100,11 @@ export const researchWorks: LocalizedWork[] = [
       en: 'The impact of e-commerce development on informal employment rates in Vietnam',
     },
     blurb: {
-      vi: 'Hội thảo Khoa học Quốc gia — Phát triển kinh tế số và nâng cao năng lực cạnh tranh của nền kinh tế',
-      en: 'National Scientific Conference — Digital economy development and competitiveness',
+      vi: 'Hội thảo Khoa học Quốc gia: Phát triển kinh tế số và nâng cao năng lực cạnh tranh của nền kinh tế',
+      en: 'National Scientific Conference: Digital economy development and competitiveness',
     },
     href: 'https://www.researchgate.net/publication/415164795_Tac_dong_cua_phat_trien_thuong_mai_dien_tu_den_ty_le_lao_dong_co_viec_lam_phi_chinh_thuc_tai_Viet_Nam',
-    badge: { vi: '2026 — Bài hội thảo', en: '2026 — Conference paper' },
+    badge: { vi: '2026: Bài hội thảo', en: '2026: Conference paper' },
     kind: 'paper',
   },
 ]
