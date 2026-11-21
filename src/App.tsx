@@ -417,8 +417,12 @@ export default function App() {
     }
   }, [])
 
+  const notebooks = useMemo(
+    () => gardenWorks.map((work) => localizeWork(work, locale)),
+    [locale],
+  )
+
   const workSections = useMemo((): WorkSection[] => {
-    const garden = gardenWorks.map((work) => localizeWork(work, locale))
     const apps = appWorks.map((work) => localizeWork(work, locale))
     const electronics = electronicsWorks.map((work) =>
       localizeWork(work, locale),
@@ -436,11 +440,6 @@ export default function App() {
           if (!work) throw new Error(`Featured work missing: ${id}`)
           return work
         }),
-      },
-      {
-        id: 'garden',
-        title: ui.garden[locale],
-        items: garden,
       },
       {
         id: 'apps',
@@ -471,55 +470,87 @@ export default function App() {
       <div className="cursor-glow" aria-hidden="true" />
       <div className="scanlines" aria-hidden="true" />
 
-      <main className="page">
-        <header className="identity" aria-label={ui.profile[locale]}>
-          <img
-            className="avatar"
-            src="/avatar.jpg"
-            alt={locale === 'vi' ? 'Lê Trí Nhân' : 'Le Tri Nhan'}
-            width={112}
-            height={112}
-          />
-          <div className="identity-meta">
-            <div className="identity-top">
-              <h1 className="name">
-                {locale === 'vi' ? 'Lê Trí Nhân' : 'Le Tri Nhan'}
-              </h1>
-              <LangToggle locale={locale} onChange={setLocale} />
-            </div>
-            <nav className="social" aria-label={ui.profiles[locale]}>
-              {links.map((link) => (
-                <SocialLink key={link.label} link={link} locale={locale} />
-              ))}
-            </nav>
-          </div>
-        </header>
+      <div className="shell">
+        <aside className="notebook-rail" aria-label={ui.notebooks[locale]}>
+          <p className="notebook-rail-label">{ui.notebooks[locale]}</p>
+          <p className="notebook-rail-hint">{ui.notebooksHint[locale]}</p>
+          <nav className="notebook-nav">
+            {notebooks.map((work) => (
+              <a
+                key={work.id}
+                className="notebook-nav-link"
+                href={work.href}
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                {work.icon ? (
+                  <img
+                    className="notebook-nav-icon"
+                    src={work.icon}
+                    alt=""
+                    width={28}
+                    height={28}
+                  />
+                ) : null}
+                <span className="notebook-nav-copy">
+                  <span className="notebook-nav-title">{work.title}</span>
+                  <span className="notebook-nav-blurb">{work.blurb}</span>
+                </span>
+              </a>
+            ))}
+          </nav>
+        </aside>
 
-        <div className="works">
-          {workSections.map((section) => (
-            <section
-              key={section.id}
-              className={`work-section${section.id === 'featured' ? ' is-featured' : ' is-rail'}`}
-              aria-labelledby={`${section.id}-title`}
-            >
-              <h2 id={`${section.id}-title`} className="section-label">
-                {section.title}
-              </h2>
-              <ul className="work-list">
-                {section.items.map((work) => (
-                  <li key={`${section.id}-${work.id}`}>
-                    <WorkCard
-                      work={work}
-                      pinned={section.id === 'featured'}
-                      compact={section.id !== 'featured'}
-                    />
-                  </li>
+        <main className="page">
+          <header className="identity" aria-label={ui.profile[locale]}>
+            <img
+              className="avatar"
+              src="/avatar.jpg"
+              alt={locale === 'vi' ? 'Lê Trí Nhân' : 'Le Tri Nhan'}
+              width={112}
+              height={112}
+            />
+            <div className="identity-meta">
+              <div className="identity-top">
+                <h1 className="name">
+                  {locale === 'vi' ? 'Lê Trí Nhân' : 'Le Tri Nhan'}
+                </h1>
+                <LangToggle locale={locale} onChange={setLocale} />
+              </div>
+              <nav className="social" aria-label={ui.profiles[locale]}>
+                {links.map((link) => (
+                  <SocialLink key={link.label} link={link} locale={locale} />
                 ))}
-              </ul>
-            </section>
-          ))}
-        </div>
-      </main>
+              </nav>
+            </div>
+          </header>
+
+          <div className="works">
+            {workSections.map((section) => (
+              <section
+                key={section.id}
+                className={`work-section${section.id === 'featured' ? ' is-featured' : ' is-rail'}`}
+                aria-labelledby={`${section.id}-title`}
+              >
+                <h2 id={`${section.id}-title`} className="section-label">
+                  {section.title}
+                </h2>
+                <ul className="work-list">
+                  {section.items.map((work) => (
+                    <li key={`${section.id}-${work.id}`}>
+                      <WorkCard
+                        work={work}
+                        pinned={section.id === 'featured'}
+                        compact={section.id !== 'featured'}
+                      />
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ))}
+          </div>
+        </main>
+      </div>
     </div>
   )
 }

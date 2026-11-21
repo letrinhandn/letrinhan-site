@@ -13,7 +13,11 @@ export type LocalizedWork = {
 
 export const ui = {
   featured: { vi: 'Nổi bật', en: 'Featured' },
-  garden: { vi: 'Digital garden', en: 'Digital garden' },
+  notebooks: { vi: 'Notebooks', en: 'Notebooks' },
+  notebooksHint: {
+    vi: 'Root page cho toàn bộ Quarto notebooks',
+    en: 'Root page for all Quarto notebooks',
+  },
   apps: { vi: 'Ứng dụng', en: 'Apps' },
   electronics: { vi: 'Điện tử', en: 'Electronics' },
   games: { vi: 'Game', en: 'Games' },
@@ -29,34 +33,34 @@ export const gardenWorks: LocalizedWork[] = [
     id: 'economic-lab',
     title: { vi: 'Economic Lab', en: 'Economic Lab' },
     blurb: {
-      vi: 'Bài luận kinh tế học: tăng trưởng, vĩ mô, Solow–Swan',
-      en: 'Economic theory essays: growth, macro, Solow–Swan',
+      vi: 'Tăng trưởng, vĩ mô, Solow-Swan',
+      en: 'Growth, macro, Solow-Swan',
     },
     href: 'https://letrinhandn.github.io/economic-lab/',
     icon: '/lab-economic.svg',
-    badge: { vi: 'Garden', en: 'Garden' },
+    badge: { vi: 'Notebook', en: 'Notebook' },
   },
   {
     id: 'quant-theory-lab',
     title: { vi: 'Quant Theory Lab', en: 'Quant Theory Lab' },
     blurb: {
-      vi: 'Lý thuyết định lượng: notebooks, papers, essays Quarto',
-      en: 'Quant finance theory: notebooks, papers, Quarto essays',
+      vi: 'Lý thuyết định lượng và risk',
+      en: 'Quant finance theory and risk',
     },
     href: 'https://letrinhandn.github.io/quant-theory-lab/',
     icon: '/lab-quant.svg',
-    badge: { vi: 'Garden', en: 'Garden' },
+    badge: { vi: 'Notebook', en: 'Notebook' },
   },
   {
     id: 'investment-research-lab',
     title: { vi: 'Investment Research Lab', en: 'Investment Research Lab' },
     blurb: {
-      vi: 'Memo, alphas đã pass, báo cáo nghiên cứu đầu tư',
-      en: 'Memos, passed alphas, investment research reports',
+      vi: 'Memo, alpha, báo cáo đầu tư',
+      en: 'Memos, alphas, research reports',
     },
     href: 'https://letrinhandn.github.io/investment-research-lab/',
     icon: '/lab-investment.svg',
-    badge: { vi: 'Garden', en: 'Garden' },
+    badge: { vi: 'Notebook', en: 'Notebook' },
   },
 ]
 
