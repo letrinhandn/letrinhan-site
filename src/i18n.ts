@@ -15,7 +15,7 @@ export type LocalizedWork = {
 }
 
 export const ui = {
-  home: { vi: 'Trang chủ', en: 'Home' },
+  home: { vi: 'Tech', en: 'Tech' },
   featured: { vi: 'Nổi bật', en: 'Featured' },
   notebooks: { vi: 'Notebooks', en: 'Notebooks' },
   apps: { vi: 'Ứng dụng', en: 'Apps' },
