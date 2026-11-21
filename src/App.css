@@ -56,33 +56,40 @@
 
 .site-header {
   --logo-size: 148px;
-  --logo-hang: 74px;
   --logo-compact: 40px;
+  --logo-gap: 1.25rem;
+  --logo-scale: calc(
+    1 - var(--p, 0) * (1 - var(--logo-compact) / var(--logo-size))
+  );
+  /* Slot shrinks with avatar so nav text hugs the compact logo. */
+  --logo-slot: calc(
+    var(--logo-size) -
+      var(--p, 0) * (var(--logo-size) - var(--logo-compact) - var(--logo-gap))
+  );
+  --nav-gap: calc(1.5rem - var(--p, 0) * 0.85rem);
+  --header-pad-y: 0.55rem;
+  --p: 0;
   position: sticky;
   top: 0;
   z-index: 30;
   width: 100%;
   flex: 0 0 auto;
   box-sizing: border-box;
-  padding: 0.85rem 4.5rem 0;
-  background: rgba(58, 7, 14, 0.94);
+  height: calc(var(--logo-compact) + var(--header-pad-y) * 2 + 3px);
+  padding: var(--header-pad-y) 4.5rem;
+  background: #3a070e;
   border-bottom: 3px solid var(--paper);
-  backdrop-filter: blur(6px);
   overflow: visible;
-  transition: padding 0.22s steps(5, end);
-}
-
-.site-header.is-compact {
-  padding: 0.55rem 4.5rem;
-  overflow: hidden;
 }
 
 .site-header-bar {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
-  gap: 1rem 1.5rem;
+  column-gap: var(--nav-gap);
   width: min(720px, 100%);
+  height: 100%;
   margin: 0 auto;
 }
 
@@ -102,34 +109,34 @@
   justify-content: flex-start;
 }
 
+/* Keeps HOME/ECONOMICS and QUANT/FINANCE evenly spaced around center. */
+.site-logo-slot {
+  width: var(--logo-slot);
+  height: 1px;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Absolute logo: layout never reflows; only transform scales on the compositor. */
 .site-logo {
-  position: relative;
+  position: absolute;
+  left: 50%;
+  top: 0;
   z-index: 40;
   width: var(--logo-size);
   height: var(--logo-size);
-  margin-bottom: calc(var(--logo-hang) * -1);
-  flex-shrink: 0;
-  transition:
-    width 0.22s steps(5, end),
-    height 0.22s steps(5, end),
-    margin-bottom 0.22s steps(5, end);
-}
-
-.site-header.is-compact .site-logo {
-  width: var(--logo-compact);
-  height: var(--logo-compact);
-  margin-bottom: 0;
+  margin-left: calc(var(--logo-size) / -2);
+  transform: scale(var(--logo-scale));
+  transform-origin: top center;
+  will-change: transform;
 }
 
 .site-lang {
   position: absolute;
-  top: 0.75rem;
+  top: 50%;
   right: 1rem;
   z-index: 41;
-}
-
-.site-header.is-compact .site-lang {
-  top: 0.55rem;
+  transform: translateY(-50%);
 }
 
 .site-nav-link {
@@ -212,16 +219,8 @@
   box-shadow:
     0 0 0 3px var(--burgundy-deep),
     5px 5px 0 var(--ink);
-  transition:
-    border-width 0.22s steps(5, end),
-    box-shadow 0.22s steps(5, end),
-    border-color 0.12s steps(3, end);
 }
 
-.site-header.is-compact .hero-avatar {
-  border-width: 2px;
-  box-shadow: 2px 2px 0 var(--ink);
-}
 
 .hero-name {
   margin: 0.85rem 0 0;
@@ -235,15 +234,6 @@
     -2px 0 0 var(--burgundy-deep),
     0 2px 0 var(--burgundy-deep),
     0 -2px 0 var(--burgundy-deep);
-}
-
-.hero-tagline {
-  margin: 0;
-  max-width: 28rem;
-  font-family: var(--font-body);
-  font-size: 0.92rem;
-  line-height: 1.45;
-  color: var(--paper-dim);
 }
 
 
@@ -729,12 +719,8 @@
     opacity: 1;
   }
 
-  .hero-avatar:hover {
-    transform: translate(-3px, -3px);
+  .site-logo:hover .hero-avatar {
     border-color: var(--gold);
-    box-shadow:
-      0 0 0 3px var(--burgundy-deep),
-      7px 7px 0 var(--ink);
   }
 
 
@@ -797,29 +783,27 @@
 @media (max-width: 720px) {
   .site-header {
     --logo-size: 128px;
-    --logo-hang: 64px;
     --logo-compact: 36px;
-    padding: 0.75rem 1rem 0;
-  }
-
-  .site-header.is-compact {
-    padding: 0.5rem 1rem;
+    padding-inline: 1rem;
+    height: auto;
+    min-height: calc(var(--logo-compact) + var(--header-pad-y) * 2 + 3px);
   }
 
   .site-header-bar {
     grid-template-columns: 1fr;
     justify-items: center;
-    gap: 0.65rem;
+    gap: 0.45rem;
+    height: auto;
+    padding-block: 0.15rem 0.35rem;
   }
 
   .site-nav-left,
   .site-nav-right {
     justify-content: center;
-    order: 2;
   }
 
-  .site-logo {
-    order: 1;
+  .site-logo-slot {
+    display: none;
   }
 
   .hero {
@@ -831,18 +815,21 @@
   }
 
   .site-lang {
-    position: static;
-    display: flex;
-    justify-content: center;
-    margin: 0.35rem 0 0.75rem;
-  }
-
-  .site-header.is-compact .site-lang {
-    margin: 0;
+    top: 0.45rem;
+    right: 0.65rem;
+    transform: none;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .site-header {
+    --p: 1;
+  }
+
+  .site-logo {
+    transform: scale(calc(var(--logo-compact) / var(--logo-size))) !important;
+  }
+
   .shell,
   .page,
   .social-btn,
@@ -850,7 +837,6 @@
   .work-link,
   .site-nav-link,
   .site-header,
-  .site-logo,
   .lang-btn,
   .hero-avatar,
   .work-icon,

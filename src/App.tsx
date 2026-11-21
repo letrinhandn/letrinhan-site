@@ -377,9 +377,9 @@ function LangToggle({
 
 export default function App() {
   const [ready, setReady] = useState(false)
-  const [compactHeader, setCompactHeader] = useState(false)
   const [locale, setLocale] = useState<Locale>(() => detectLocale())
   const siteRef = useRef<HTMLDivElement>(null)
+  const headerRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
     const id = requestAnimationFrame(() => setReady(true))
@@ -393,13 +393,17 @@ export default function App() {
       locale === 'vi' ? 'Lê Trí Nhân' : 'Le Tri Nhan'
   }, [locale])
 
-  // Standard shrink-on-scroll sticky header: toggle one class past a threshold.
+  // Drive --p from scroll so logo scale + nav gap shrink in lockstep.
   useEffect(() => {
-    const SCROLL_THRESHOLD = 56
+    const header = headerRef.current
+    if (!header) return
+
+    const RANGE = 120
     let frame = 0
     const sync = () => {
       frame = 0
-      setCompactHeader(window.scrollY > SCROLL_THRESHOLD)
+      const p = Math.min(1, Math.max(0, window.scrollY / RANGE))
+      header.style.setProperty('--p', p.toFixed(4))
     }
     const onScroll = () => {
       if (frame) return
@@ -486,9 +490,7 @@ export default function App() {
       <div className="cursor-glow" aria-hidden="true" />
       <div className="scanlines" aria-hidden="true" />
 
-      <header
-        className={`site-header${compactHeader ? ' is-compact' : ''}`}
-      >
+      <header ref={headerRef} className="site-header" style={{ ['--p' as string]: 0 }}>
         <div className="site-header-bar">
           <nav className="site-nav site-nav-left" aria-label={ui.home[locale]}>
             <a className="site-nav-link is-active" href={`${import.meta.env.BASE_URL}`}>
@@ -498,13 +500,12 @@ export default function App() {
               className="site-nav-link"
               href={notebookNav[0].href}
               title={notebookNav[0].title[locale]}
-              target="_blank"
-              rel="noreferrer noopener"
             >
               {notebookNav[0].nav[locale]}
             </a>
           </nav>
 
+          <div className="site-logo-slot" aria-hidden="true" />
           <div className="site-logo">
             <img
               className="hero-avatar"
@@ -520,8 +521,6 @@ export default function App() {
               className="site-nav-link"
               href={notebookNav[1].href}
               title={notebookNav[1].title[locale]}
-              target="_blank"
-              rel="noreferrer noopener"
             >
               {notebookNav[1].nav[locale]}
             </a>
@@ -529,8 +528,6 @@ export default function App() {
               className="site-nav-link"
               href={notebookNav[2].href}
               title={notebookNav[2].title[locale]}
-              target="_blank"
-              rel="noreferrer noopener"
             >
               {notebookNav[2].nav[locale]}
             </a>
@@ -547,11 +544,6 @@ export default function App() {
             <h1 className="hero-name">
               {locale === 'vi' ? 'Lê Trí Nhân' : 'Le Tri Nhan'}
             </h1>
-            <p className="hero-tagline">
-              {locale === 'vi'
-                ? 'Hub cá nhân: tiểu luận, projects và công trình theo từng lĩnh vực.'
-                : 'Personal hub: essays, projects, and works by field.'}
-            </p>
             <nav className="social" aria-label={ui.profiles[locale]}>
               {links.map((link) => (
                 <SocialLink key={link.label} link={link} locale={locale} />
