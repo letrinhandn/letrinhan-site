@@ -29,6 +29,10 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-padding-top: 4.5rem;
+}
+
 html,
 body,
 #root {

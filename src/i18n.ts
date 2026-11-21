@@ -15,14 +15,9 @@ export type LocalizedWork = {
 }
 
 export const ui = {
+  home: { vi: 'Trang chủ', en: 'Home' },
   featured: { vi: 'Nổi bật', en: 'Featured' },
   notebooks: { vi: 'Notebooks', en: 'Notebooks' },
-  notebooksHint: {
-    vi: 'Tiểu luận, projects và công trình cá nhân theo từng lĩnh vực',
-    en: 'Personal essays, projects, and works by field',
-  },
-  notebooksOpen: { vi: 'Mở notebooks', en: 'Open notebooks' },
-  notebooksClose: { vi: 'Đóng', en: 'Close' },
   apps: { vi: 'Ứng dụng', en: 'Apps' },
   electronics: { vi: 'Điện tử', en: 'Electronics' },
   games: { vi: 'Game', en: 'Games' },
@@ -32,42 +27,63 @@ export const ui = {
   langSwitch: { vi: 'Đổi sang English', en: 'Switch to Tiếng Việt' },
 } as const
 
-/** Quarto knowledge vaults — hub links from the personal site */
-export const gardenWorks: LocalizedWork[] = [
+export type NotebookNav = {
+  id: string
+  href: string
+  nav: Record<Locale, string>
+  title: Record<Locale, string>
+  blurb: Record<Locale, string>
+}
+
+/** Top-nav notebook pages — personal essays/projects by field */
+export const notebookNav: NotebookNav[] = [
   {
     id: 'economic-lab',
+    href: 'https://letrinhandn.github.io/economic-lab/',
+    nav: { vi: 'Economics', en: 'Economics' },
     title: { vi: 'Economic Lab', en: 'Economic Lab' },
     blurb: {
       vi: 'Tiểu luận và công trình cá nhân về kinh tế học',
       en: 'Personal essays and works in economics',
     },
-    href: 'https://letrinhandn.github.io/economic-lab/',
-    icon: asset('lab-economic.svg'),
-    badge: { vi: 'Notebook', en: 'Notebook' },
   },
   {
     id: 'quant-theory-lab',
+    href: 'https://letrinhandn.github.io/quant-theory-lab/',
+    nav: { vi: 'Quant', en: 'Quant' },
     title: { vi: 'Quant Theory Lab', en: 'Quant Theory Lab' },
     blurb: {
       vi: 'Tiểu luận và projects về lý thuyết định lượng',
       en: 'Personal essays and projects in quant theory',
     },
-    href: 'https://letrinhandn.github.io/quant-theory-lab/',
-    icon: asset('lab-quant.svg'),
-    badge: { vi: 'Notebook', en: 'Notebook' },
   },
   {
     id: 'investment-research-lab',
+    href: 'https://letrinhandn.github.io/investment-research-lab/',
+    nav: { vi: 'Finance', en: 'Finance' },
     title: { vi: 'Investment Research Lab', en: 'Investment Research Lab' },
     blurb: {
       vi: 'Tiểu luận và projects nghiên cứu đầu tư',
       en: 'Personal essays and projects in investment research',
     },
-    href: 'https://letrinhandn.github.io/investment-research-lab/',
-    icon: asset('lab-investment.svg'),
-    badge: { vi: 'Notebook', en: 'Notebook' },
   },
 ]
+
+/** Quarto knowledge vaults — hub cards if needed */
+export const gardenWorks: LocalizedWork[] = notebookNav.map((item) => ({
+  id: item.id,
+  title: item.title,
+  blurb: item.blurb,
+  href: item.href,
+  icon: asset(
+    item.id === 'economic-lab'
+      ? 'lab-economic.svg'
+      : item.id === 'quant-theory-lab'
+        ? 'lab-quant.svg'
+        : 'lab-investment.svg',
+  ),
+  badge: { vi: 'Notebook', en: 'Notebook' },
+}))
 
 export const appWorks: LocalizedWork[] = [
   {

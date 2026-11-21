@@ -6,7 +6,7 @@ import {
   detectLocale,
   electronicsWorks,
   gameWorks,
-  gardenWorks,
+  notebookNav,
   researchWorks,
   storeLocale,
   ui,
@@ -377,10 +377,9 @@ function LangToggle({
 
 export default function App() {
   const [ready, setReady] = useState(false)
-  const [drawerOpen, setDrawerOpen] = useState(false)
+  const [compactHeader, setCompactHeader] = useState(false)
   const [locale, setLocale] = useState<Locale>(() => detectLocale())
   const siteRef = useRef<HTMLDivElement>(null)
-  const drawerCloseRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
     const id = requestAnimationFrame(() => setReady(true))
@@ -394,19 +393,25 @@ export default function App() {
       locale === 'vi' ? 'Lê Trí Nhân' : 'Le Tri Nhan'
   }, [locale])
 
+  // Standard shrink-on-scroll sticky header: toggle one class past a threshold.
   useEffect(() => {
-    if (!drawerOpen) return
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setDrawerOpen(false)
+    const SCROLL_THRESHOLD = 56
+    let frame = 0
+    const sync = () => {
+      frame = 0
+      setCompactHeader(window.scrollY > SCROLL_THRESHOLD)
     }
-    document.addEventListener('keydown', onKey)
-    document.body.style.overflow = 'hidden'
-    drawerCloseRef.current?.focus()
+    const onScroll = () => {
+      if (frame) return
+      frame = requestAnimationFrame(sync)
+    }
+    sync()
+    window.addEventListener('scroll', onScroll, { passive: true })
     return () => {
-      document.removeEventListener('keydown', onKey)
-      document.body.style.overflow = ''
+      cancelAnimationFrame(frame)
+      window.removeEventListener('scroll', onScroll)
     }
-  }, [drawerOpen])
+  }, [])
 
   // Desktop-only cursor spotlight on the burgundy backdrop.
   useEffect(() => {
@@ -432,11 +437,6 @@ export default function App() {
       window.removeEventListener('pointermove', onMove)
     }
   }, [])
-
-  const notebooks = useMemo(
-    () => gardenWorks.map((work) => localizeWork(work, locale)),
-    [locale],
-  )
 
   const workSections = useMemo((): WorkSection[] => {
     const apps = appWorks.map((work) => localizeWork(work, locale))
@@ -481,102 +481,82 @@ export default function App() {
   }, [locale])
 
   return (
-    <div
-      ref={siteRef}
-      className={`site${ready ? ' is-ready' : ''}${drawerOpen ? ' is-drawer-open' : ''}`}
-    >
+    <div ref={siteRef} className={`site${ready ? ' is-ready' : ''}`}>
       <GlyphField />
       <div className="cursor-glow" aria-hidden="true" />
       <div className="scanlines" aria-hidden="true" />
 
-      <button
-        type="button"
-        className="notebook-drawer-toggle"
-        aria-expanded={drawerOpen}
-        aria-controls="notebook-drawer"
-        onClick={() => setDrawerOpen(true)}
+      <header
+        className={`site-header${compactHeader ? ' is-compact' : ''}`}
       >
-        {ui.notebooks[locale]}
-      </button>
-
-      <div
-        className="notebook-drawer-backdrop"
-        hidden={!drawerOpen}
-        onClick={() => setDrawerOpen(false)}
-        aria-hidden="true"
-      />
-
-      <aside
-        id="notebook-drawer"
-        className="notebook-drawer"
-        aria-label={ui.notebooks[locale]}
-        aria-hidden={!drawerOpen}
-      >
-        <div className="notebook-drawer-head">
-          <div>
-            <p className="notebook-rail-label">{ui.notebooks[locale]}</p>
-            <p className="notebook-rail-hint">{ui.notebooksHint[locale]}</p>
-          </div>
-          <button
-            ref={drawerCloseRef}
-            type="button"
-            className="notebook-drawer-close"
-            onClick={() => setDrawerOpen(false)}
-          >
-            {ui.notebooksClose[locale]}
-          </button>
-        </div>
-        <nav className="notebook-nav">
-          {notebooks.map((work) => (
+        <div className="site-header-bar">
+          <nav className="site-nav site-nav-left" aria-label={ui.home[locale]}>
+            <a className="site-nav-link is-active" href={`${import.meta.env.BASE_URL}`}>
+              {ui.home[locale]}
+            </a>
             <a
-              key={work.id}
-              className="notebook-nav-link"
-              href={work.href}
+              className="site-nav-link"
+              href={notebookNav[0].href}
+              title={notebookNav[0].title[locale]}
               target="_blank"
               rel="noreferrer noopener"
-              onClick={() => setDrawerOpen(false)}
             >
-              {work.icon ? (
-                <img
-                  className="notebook-nav-icon"
-                  src={work.icon}
-                  alt=""
-                  width={28}
-                  height={28}
-                />
-              ) : null}
-              <span className="notebook-nav-copy">
-                <span className="notebook-nav-title">{work.title}</span>
-                <span className="notebook-nav-blurb">{work.blurb}</span>
-              </span>
+              {notebookNav[0].nav[locale]}
             </a>
-          ))}
-        </nav>
-      </aside>
+          </nav>
+
+          <div className="site-logo">
+            <img
+              className="hero-avatar"
+              src={`${import.meta.env.BASE_URL}avatar.jpg`}
+              alt={locale === 'vi' ? 'Lê Trí Nhân' : 'Le Tri Nhan'}
+              width={148}
+              height={148}
+            />
+          </div>
+
+          <nav className="site-nav site-nav-right" aria-label={ui.notebooks[locale]}>
+            <a
+              className="site-nav-link"
+              href={notebookNav[1].href}
+              title={notebookNav[1].title[locale]}
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              {notebookNav[1].nav[locale]}
+            </a>
+            <a
+              className="site-nav-link"
+              href={notebookNav[2].href}
+              title={notebookNav[2].title[locale]}
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              {notebookNav[2].nav[locale]}
+            </a>
+          </nav>
+        </div>
+        <div className="site-lang">
+          <LangToggle locale={locale} onChange={setLocale} />
+        </div>
+      </header>
 
       <div className="shell">
         <main className="page">
-          <header className="identity" aria-label={ui.profile[locale]}>
-            <img
-              className="avatar"
-              src={`${import.meta.env.BASE_URL}avatar.jpg`}
-              alt={locale === 'vi' ? 'Lê Trí Nhân' : 'Le Tri Nhan'}
-              width={112}
-              height={112}
-            />
-            <div className="identity-meta">
-              <div className="identity-top">
-                <h1 className="name">
-                  {locale === 'vi' ? 'Lê Trí Nhân' : 'Le Tri Nhan'}
-                </h1>
-                <LangToggle locale={locale} onChange={setLocale} />
-              </div>
-              <nav className="social" aria-label={ui.profiles[locale]}>
-                {links.map((link) => (
-                  <SocialLink key={link.label} link={link} locale={locale} />
-                ))}
-              </nav>
-            </div>
+          <header className="hero" aria-label={ui.profile[locale]}>
+            <h1 className="hero-name">
+              {locale === 'vi' ? 'Lê Trí Nhân' : 'Le Tri Nhan'}
+            </h1>
+            <p className="hero-tagline">
+              {locale === 'vi'
+                ? 'Hub cá nhân: tiểu luận, projects và công trình theo từng lĩnh vực.'
+                : 'Personal hub: essays, projects, and works by field.'}
+            </p>
+            <nav className="social" aria-label={ui.profiles[locale]}>
+              {links.map((link) => (
+                <SocialLink key={link.label} link={link} locale={locale} />
+              ))}
+            </nav>
           </header>
 
           <div className="works">
