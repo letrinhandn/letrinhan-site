@@ -54,9 +54,9 @@ export const gardenWorks: LocalizedWork[] = [
       vi: 'Memo, alphas đã pass, báo cáo nghiên cứu đầu tư',
       en: 'Memos, passed alphas, investment research reports',
     },
-    href: 'https://github.com/letrinhandn/investment-research-lab',
+    href: 'https://letrinhandn.github.io/investment-research-lab/',
     icon: '/lab-investment.svg',
-    badge: { vi: 'Vault', en: 'Vault' },
+    badge: { vi: 'Garden', en: 'Garden' },
   },
 ]
 
