@@ -6,6 +6,7 @@ import {
   detectLocale,
   electronicsWorks,
   gameWorks,
+  gardenWorks,
   researchWorks,
   storeLocale,
   ui,
@@ -417,6 +418,7 @@ export default function App() {
   }, [])
 
   const workSections = useMemo((): WorkSection[] => {
+    const garden = gardenWorks.map((work) => localizeWork(work, locale))
     const apps = appWorks.map((work) => localizeWork(work, locale))
     const electronics = electronicsWorks.map((work) =>
       localizeWork(work, locale),
@@ -434,6 +436,11 @@ export default function App() {
           if (!work) throw new Error(`Featured work missing: ${id}`)
           return work
         }),
+      },
+      {
+        id: 'garden',
+        title: ui.garden[locale],
+        items: garden,
       },
       {
         id: 'apps',

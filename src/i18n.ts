@@ -13,6 +13,7 @@ export type LocalizedWork = {
 
 export const ui = {
   featured: { vi: 'Nổi bật', en: 'Featured' },
+  garden: { vi: 'Digital garden', en: 'Digital garden' },
   apps: { vi: 'Ứng dụng', en: 'Apps' },
   electronics: { vi: 'Điện tử', en: 'Electronics' },
   games: { vi: 'Game', en: 'Games' },
@@ -21,6 +22,43 @@ export const ui = {
   profiles: { vi: 'Liên kết', en: 'Profiles' },
   langSwitch: { vi: 'Đổi sang English', en: 'Switch to Tiếng Việt' },
 } as const
+
+/** Quarto knowledge vaults — hub links from the personal site */
+export const gardenWorks: LocalizedWork[] = [
+  {
+    id: 'economic-lab',
+    title: { vi: 'Economic Lab', en: 'Economic Lab' },
+    blurb: {
+      vi: 'Bài luận kinh tế học: tăng trưởng, vĩ mô, Solow–Swan',
+      en: 'Economic theory essays: growth, macro, Solow–Swan',
+    },
+    href: 'https://letrinhandn.github.io/economic-lab/',
+    icon: '/lab-economic.svg',
+    badge: { vi: 'Garden', en: 'Garden' },
+  },
+  {
+    id: 'quant-theory-lab',
+    title: { vi: 'Quant Theory Lab', en: 'Quant Theory Lab' },
+    blurb: {
+      vi: 'Lý thuyết định lượng: notebooks, papers, essays Quarto',
+      en: 'Quant finance theory: notebooks, papers, Quarto essays',
+    },
+    href: 'https://letrinhandn.github.io/quant-theory-lab/',
+    icon: '/lab-quant.svg',
+    badge: { vi: 'Garden', en: 'Garden' },
+  },
+  {
+    id: 'investment-research-lab',
+    title: { vi: 'Investment Research Lab', en: 'Investment Research Lab' },
+    blurb: {
+      vi: 'Memo, alphas đã pass, báo cáo nghiên cứu đầu tư',
+      en: 'Memos, passed alphas, investment research reports',
+    },
+    href: 'https://github.com/letrinhandn/investment-research-lab',
+    icon: '/lab-investment.svg',
+    badge: { vi: 'Vault', en: 'Vault' },
+  },
+]
 
 export const appWorks: LocalizedWork[] = [
   {
