@@ -15,7 +15,8 @@ export type LocalizedWork = {
 }
 
 export const ui = {
-  home: { vi: 'Tech', en: 'Tech' },
+  home: { vi: 'Trang chủ', en: 'Home' },
+  tech: { vi: 'Tech', en: 'Tech' },
   featured: { vi: 'Nổi bật', en: 'Featured' },
   notebooks: { vi: 'Notebooks', en: 'Notebooks' },
   apps: { vi: 'Ứng dụng', en: 'Apps' },
@@ -35,8 +36,18 @@ export type NotebookNav = {
   blurb: Record<Locale, string>
 }
 
-/** Top-nav notebook pages — personal essays/projects by field */
+/** Top-nav notebook pages — Tech | Economics | avatar(root) | Quant | Finance */
 export const notebookNav: NotebookNav[] = [
+  {
+    id: 'tech-lab',
+    href: 'https://letrinhandn.github.io/tech-lab/',
+    nav: { vi: 'Tech', en: 'Tech' },
+    title: { vi: 'Tech Lab', en: 'Tech Lab' },
+    blurb: {
+      vi: 'Apps, điện tử và ghi chú xây dựng hệ thống',
+      en: 'Apps, electronics, and build notes',
+    },
+  },
   {
     id: 'economic-lab',
     href: 'https://letrinhandn.github.io/economic-lab/',
@@ -76,11 +87,13 @@ export const gardenWorks: LocalizedWork[] = notebookNav.map((item) => ({
   blurb: item.blurb,
   href: item.href,
   icon: asset(
-    item.id === 'economic-lab'
-      ? 'lab-economic.svg'
-      : item.id === 'quant-theory-lab'
-        ? 'lab-quant.svg'
-        : 'lab-investment.svg',
+    item.id === 'tech-lab'
+      ? 'lab-quant.svg'
+      : item.id === 'economic-lab'
+        ? 'lab-economic.svg'
+        : item.id === 'quant-theory-lab'
+          ? 'lab-quant.svg'
+          : 'lab-investment.svg',
   ),
   badge: { vi: 'Notebook', en: 'Notebook' },
 }))

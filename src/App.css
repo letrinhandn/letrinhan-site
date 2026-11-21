@@ -123,12 +123,14 @@
   left: 50%;
   top: 0;
   z-index: 40;
+  display: block;
   width: var(--logo-size);
   height: var(--logo-size);
   margin-left: calc(var(--logo-size) / -2);
   transform: scale(var(--logo-scale));
   transform-origin: top center;
   will-change: transform;
+  line-height: 0;
 }
 
 .site-lang {

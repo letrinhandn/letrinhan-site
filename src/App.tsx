@@ -492,10 +492,7 @@ export default function App() {
 
       <header ref={headerRef} className="site-header" style={{ ['--p' as string]: 0 }}>
         <div className="site-header-bar">
-          <nav className="site-nav site-nav-left" aria-label={ui.home[locale]}>
-            <a className="site-nav-link is-active" href={`${import.meta.env.BASE_URL}`}>
-              {ui.home[locale]}
-            </a>
+          <nav className="site-nav site-nav-left" aria-label={ui.notebooks[locale]}>
             <a
               className="site-nav-link"
               href={notebookNav[0].href}
@@ -503,20 +500,6 @@ export default function App() {
             >
               {notebookNav[0].nav[locale]}
             </a>
-          </nav>
-
-          <div className="site-logo-slot" aria-hidden="true" />
-          <div className="site-logo">
-            <img
-              className="hero-avatar"
-              src={`${import.meta.env.BASE_URL}avatar.jpg`}
-              alt={locale === 'vi' ? 'Lê Trí Nhân' : 'Le Tri Nhan'}
-              width={148}
-              height={148}
-            />
-          </div>
-
-          <nav className="site-nav site-nav-right" aria-label={ui.notebooks[locale]}>
             <a
               className="site-nav-link"
               href={notebookNav[1].href}
@@ -524,12 +507,38 @@ export default function App() {
             >
               {notebookNav[1].nav[locale]}
             </a>
+          </nav>
+
+          <div className="site-logo-slot" aria-hidden="true" />
+          <a
+            className="site-logo"
+            href={`${import.meta.env.BASE_URL}`}
+            aria-label={ui.home[locale]}
+            title={ui.home[locale]}
+          >
+            <img
+              className="hero-avatar"
+              src={`${import.meta.env.BASE_URL}avatar.jpg`}
+              alt={locale === 'vi' ? 'Lê Trí Nhân' : 'Le Tri Nhan'}
+              width={148}
+              height={148}
+            />
+          </a>
+
+          <nav className="site-nav site-nav-right" aria-label={ui.notebooks[locale]}>
             <a
               className="site-nav-link"
               href={notebookNav[2].href}
               title={notebookNav[2].title[locale]}
             >
               {notebookNav[2].nav[locale]}
+            </a>
+            <a
+              className="site-nav-link"
+              href={notebookNav[3].href}
+              title={notebookNav[3].title[locale]}
+            >
+              {notebookNav[3].nav[locale]}
             </a>
           </nav>
         </div>
