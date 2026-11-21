@@ -26,7 +26,47 @@ export const ui = {
   profile: { vi: 'Hồ sơ', en: 'Profile' },
   profiles: { vi: 'Liên kết', en: 'Profiles' },
   langSwitch: { vi: 'Đổi sang English', en: 'Switch to Tiếng Việt' },
+  themeLight: { vi: 'Sáng', en: 'Light' },
+  themeDark: { vi: 'Tối', en: 'Dark' },
+  themeSwitch: { vi: 'Đổi giao diện', en: 'Toggle theme' },
 } as const
+
+export type Theme = 'dark' | 'light'
+
+const THEME_KEY = 'letrinhan-site-theme'
+
+export function readStoredTheme(): Theme | null {
+  try {
+    const value = localStorage.getItem(THEME_KEY)
+    if (value === 'dark' || value === 'light') return value
+  } catch {
+    /* ignore */
+  }
+  return null
+}
+
+export function storeTheme(theme: Theme): void {
+  try {
+    localStorage.setItem(THEME_KEY, theme)
+  } catch {
+    /* ignore */
+  }
+}
+
+export function detectTheme(): Theme {
+  const stored = readStoredTheme()
+  if (stored) return stored
+  if (typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: light)').matches) {
+    return 'light'
+  }
+  return 'dark'
+}
+
+export function applyTheme(theme: Theme): void {
+  document.documentElement.dataset.theme = theme
+  const meta = document.querySelector('meta[name="theme-color"]')
+  if (meta) meta.setAttribute('content', theme === 'dark' ? '#5e0b15' : '#f7f1ed')
+}
 
 export type NotebookNav = {
   id: string

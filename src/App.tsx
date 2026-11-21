@@ -3,15 +3,19 @@ import { BrandIcon, type IconKey } from './BrandIcon'
 import { GlyphField } from './GlyphField'
 import {
   appWorks,
+  applyTheme,
   detectLocale,
+  detectTheme,
   electronicsWorks,
   gameWorks,
   notebookNav,
   researchWorks,
   storeLocale,
+  storeTheme,
   ui,
   type Locale,
   type LocalizedWork,
+  type Theme,
 } from './i18n'
 import './App.css'
 
@@ -353,31 +357,48 @@ function LangToggle({
   locale: Locale
   onChange: (locale: Locale) => void
 }) {
+  const next = locale === 'vi' ? 'en' : 'vi'
   return (
-    <div className="lang-toggle" role="group" aria-label="Language">
-      <button
-        type="button"
-        className={`lang-btn${locale === 'vi' ? ' is-active' : ''}`}
-        aria-pressed={locale === 'vi'}
-        onClick={() => onChange('vi')}
-      >
-        VI
-      </button>
-      <button
-        type="button"
-        className={`lang-btn${locale === 'en' ? ' is-active' : ''}`}
-        aria-pressed={locale === 'en'}
-        onClick={() => onChange('en')}
-      >
-        EN
-      </button>
-    </div>
+    <button
+      type="button"
+      className="header-chip"
+      aria-label={ui.langSwitch[locale]}
+      title={ui.langSwitch[locale]}
+      onClick={() => onChange(next)}
+    >
+      {locale === 'vi' ? 'VI' : 'EN'}
+    </button>
+  )
+}
+
+function ThemeToggle({
+  theme,
+  locale,
+  onChange,
+}: {
+  theme: Theme
+  locale: Locale
+  onChange: (theme: Theme) => void
+}) {
+  const next = theme === 'dark' ? 'light' : 'dark'
+  return (
+    <button
+      type="button"
+      className="header-chip"
+      aria-label={ui.themeSwitch[locale]}
+      title={ui.themeSwitch[locale]}
+      aria-pressed={theme === 'dark'}
+      onClick={() => onChange(next)}
+    >
+      {theme === 'dark' ? ui.themeDark[locale] : ui.themeLight[locale]}
+    </button>
   )
 }
 
 export default function App() {
   const [ready, setReady] = useState(false)
   const [locale, setLocale] = useState<Locale>(() => detectLocale())
+  const [theme, setTheme] = useState<Theme>(() => detectTheme())
   const siteRef = useRef<HTMLDivElement>(null)
   const headerRef = useRef<HTMLElement>(null)
 
@@ -392,6 +413,11 @@ export default function App() {
     document.title =
       locale === 'vi' ? 'Lê Trí Nhân' : 'Le Tri Nhan'
   }, [locale])
+
+  useEffect(() => {
+    storeTheme(theme)
+    applyTheme(theme)
+  }, [theme])
 
   // Drive --p from scroll so logo scale + nav gap shrink in lockstep.
   useEffect(() => {
@@ -485,7 +511,11 @@ export default function App() {
   }, [locale])
 
   return (
-    <div ref={siteRef} className={`site${ready ? ' is-ready' : ''}`}>
+    <div
+      ref={siteRef}
+      className={`site${ready ? ' is-ready' : ''}`}
+      data-theme={theme}
+    >
       <GlyphField />
       <div className="cursor-glow" aria-hidden="true" />
       <div className="scanlines" aria-hidden="true" />
@@ -542,7 +572,8 @@ export default function App() {
             </a>
           </nav>
         </div>
-        <div className="site-lang">
+        <div className="site-controls">
+          <ThemeToggle theme={theme} locale={locale} onChange={setTheme} />
           <LangToggle locale={locale} onChange={setLocale} />
         </div>
       </header>

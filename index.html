@@ -9,7 +9,20 @@
       name="description"
       content="Lê Trí Nhân / Le Tri Nhan: research and writing on economics, political economy, and public policy."
     />
-    <meta name="theme-color" content="#6B0F1A" />
+    <meta name="theme-color" content="#5e0b15" />
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('letrinhan-site-theme')
+          if (t !== 'light' && t !== 'dark') {
+            t = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'
+          }
+          document.documentElement.dataset.theme = t
+        } catch (e) {
+          document.documentElement.dataset.theme = 'dark'
+        }
+      })()
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

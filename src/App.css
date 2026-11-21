@@ -10,6 +10,78 @@
     radial-gradient(ellipse 70% 45% at 50% 12%, #90323d 0%, transparent 58%),
     linear-gradient(180deg, #90323d 0%, var(--burgundy) 55%, #3a070e 100%);
   color: var(--paper);
+  transition: background 0.2s steps(4, end), color 0.2s steps(4, end);
+}
+
+.site[data-theme='light'] {
+  background:
+    radial-gradient(ellipse 65% 40% at 50% 8%, rgba(144, 50, 61, 0.08) 0%, transparent 55%),
+    linear-gradient(180deg, #fffdfb 0%, #f7f1ed 55%, #efe6e1 100%);
+  color: var(--ink);
+}
+
+.site[data-theme='light'] .glyph-field {
+  opacity: 0.18;
+}
+
+.site[data-theme='light'] .scanlines {
+  opacity: 0.02;
+}
+
+.site[data-theme='light'] .cursor-glow {
+  background:
+    radial-gradient(
+      420px circle at var(--mx) var(--my),
+      rgba(188, 128, 52, 0.1) 0%,
+      rgba(144, 50, 61, 0.08) 28%,
+      transparent 62%
+    );
+}
+
+.site[data-theme='light'] .hero-name,
+.site[data-theme='light'] .work-title,
+.site[data-theme='light'] .work-section-title,
+.site[data-theme='light'] .social-preview-title {
+  color: var(--ink);
+}
+
+.site[data-theme='light'] .work-blurb,
+.site[data-theme='light'] .work-badge,
+.site[data-theme='light'] .social-preview-blurb,
+.site[data-theme='light'] .social-preview-handle {
+  color: var(--paper-dim);
+}
+
+.site[data-theme='light'] .social-btn,
+.site[data-theme='light'] .social-preview,
+.site[data-theme='light'] .social-preview-icon,
+.site[data-theme='light'] .work-link,
+.site[data-theme='light'] .work-icon,
+.site[data-theme='light'] .work-mark {
+  color: var(--ink);
+  background: #fffdfb;
+  border-color: rgba(94, 11, 21, 0.22);
+  box-shadow: none;
+}
+
+.site[data-theme='light'] .social-preview::before {
+  background: #fffdfb;
+  border-color: rgba(94, 11, 21, 0.22);
+}
+
+.site[data-theme='light'] .work-link:hover,
+.site[data-theme='light'] .work-link:focus-visible,
+.site[data-theme='light'] .social-btn:hover,
+.site[data-theme='light'] .social-btn:focus-visible {
+  border-color: var(--burgundy-mid);
+  background: #fff;
+}
+
+.site[data-theme='light'] .hero-avatar {
+  border-color: #d9cab3;
+  box-shadow:
+    0 0 0 3px #3a070e,
+    5px 5px 0 rgba(94, 11, 21, 0.35);
 }
 
 .glyph-field {
@@ -68,6 +140,7 @@
   );
   --nav-gap: calc(1.5rem - var(--p, 0) * 0.85rem);
   --header-pad-y: 0.55rem;
+  --nav-cream: #d9cab3;
   --p: 0;
   position: sticky;
   top: 0;
@@ -78,7 +151,8 @@
   height: calc(var(--logo-compact) + var(--header-pad-y) * 2 + 3px);
   padding: var(--header-pad-y) 4.5rem;
   background: #3a070e;
-  border-bottom: 3px solid var(--paper);
+  border-bottom: 3px solid var(--nav-cream);
+  color: var(--nav-cream);
   overflow: visible;
 }
 
@@ -133,12 +207,41 @@
   line-height: 0;
 }
 
-.site-lang {
+.site-controls {
   position: absolute;
   top: 50%;
   right: 1rem;
   z-index: 41;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
   transform: translateY(-50%);
+}
+
+.header-chip {
+  margin: 0;
+  padding: 0.35rem 0.6rem;
+  min-width: 2.6rem;
+  font-family: var(--font-pixel);
+  font-size: 0.42rem;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--nav-cream);
+  background: #2a050a;
+  border: 2px solid var(--nav-cream);
+  cursor: pointer;
+  transition:
+    color 0.1s steps(2, end),
+    background 0.1s steps(2, end),
+    border-color 0.1s steps(2, end);
+}
+
+.header-chip:hover,
+.header-chip:focus-visible {
+  color: var(--gold);
+  border-color: var(--gold);
+  outline: none;
 }
 
 .site-nav-link {
@@ -165,7 +268,7 @@
 
 .site-nav-link.is-active {
   color: var(--gold);
-  border-color: var(--paper);
+  border-color: var(--nav-cream);
   background: rgba(188, 128, 52, 0.12);
 }
 
@@ -239,47 +342,6 @@
 }
 
 
-.lang-toggle {
-  display: inline-flex;
-  flex-shrink: 0;
-  border: 3px solid var(--paper);
-  box-shadow:
-    0 0 0 2px var(--burgundy-deep),
-    3px 3px 0 var(--ink);
-  background: var(--burgundy-deep);
-}
-
-.lang-btn {
-  margin: 0;
-  padding: 0.35rem 0.55rem;
-  min-width: 2.4rem;
-  font-family: var(--font-pixel);
-  font-size: 0.42rem;
-  line-height: 1;
-  color: var(--paper-dim);
-  background: transparent;
-  border: 0;
-  cursor: pointer;
-  transition:
-    background 0.1s steps(2, end),
-    color 0.1s steps(2, end);
-}
-
-.lang-btn + .lang-btn {
-  border-left: 2px solid var(--paper);
-}
-
-.lang-btn.is-active {
-  color: var(--gold);
-  background: rgba(188, 128, 52, 0.16);
-}
-
-.lang-btn:hover,
-.lang-btn:focus-visible {
-  color: var(--paper);
-  background: var(--burgundy-bright);
-  outline: none;
-}
 
 .social {
   display: flex;
@@ -816,7 +878,7 @@
     margin-top: 0.75rem;
   }
 
-  .site-lang {
+  .site-controls {
     top: 0.45rem;
     right: 0.65rem;
     transform: none;
@@ -839,7 +901,7 @@
   .work-link,
   .site-nav-link,
   .site-header,
-  .lang-btn,
+  .header-chip,
   .hero-avatar,
   .work-icon,
   .work-mark,
