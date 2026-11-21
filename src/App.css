@@ -6,8 +6,8 @@
   display: flex;
   justify-content: center;
   background:
-    radial-gradient(ellipse 70% 45% at 50% 12%, #8b1a2b 0%, transparent 58%),
-    linear-gradient(180deg, var(--burgundy) 0%, var(--burgundy-deep) 72%, #140406 100%);
+    radial-gradient(ellipse 70% 45% at 50% 12%, #90323d 0%, transparent 58%),
+    linear-gradient(180deg, #90323d 0%, var(--burgundy) 55%, #3a070e 100%);
   color: var(--paper);
 }
 
@@ -31,8 +31,8 @@
   background:
     radial-gradient(
       420px circle at var(--mx) var(--my),
-      rgba(196, 163, 90, 0.16) 0%,
-      rgba(155, 27, 46, 0.18) 28%,
+      rgba(188, 128, 52, 0.16) 0%,
+      rgba(144, 50, 61, 0.18) 28%,
       transparent 62%
     );
   transition: opacity 0.25s steps(4, end);
@@ -161,7 +161,7 @@
 
 .lang-btn.is-active {
   color: var(--gold);
-  background: rgba(196, 163, 90, 0.16);
+  background: rgba(188, 128, 52, 0.16);
 }
 
 .lang-btn:hover,
@@ -644,7 +644,7 @@
     box-shadow:
       0 0 0 2px var(--burgundy-deep),
       6px 6px 0 var(--ink),
-      0 0 18px rgba(196, 163, 90, 0.18);
+      0 0 18px rgba(188, 128, 52, 0.18);
   }
 
   .work-link:hover::after,

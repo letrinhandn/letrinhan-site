@@ -218,13 +218,13 @@ function PixelPaper() {
       aria-hidden="true"
       shapeRendering="crispEdges"
     >
-      <rect x="3" y="1" width="10" height="12" fill="#c4a35a" />
-      <rect x="2" y="2" width="10" height="12" fill="#d9c8c2" />
-      <rect x="1" y="3" width="10" height="12" fill="#f2e8e4" />
-      <rect x="3" y="5" width="6" height="1" fill="#6b0f1a" />
-      <rect x="3" y="7" width="6" height="1" fill="#6b0f1a" />
-      <rect x="3" y="9" width="4" height="1" fill="#6b0f1a" />
-      <rect x="3" y="11" width="5" height="1" fill="#6b0f1a" />
+      <rect x="3" y="1" width="10" height="12" fill="#bc8034" />
+      <rect x="2" y="2" width="10" height="12" fill="#8c7a6b" />
+      <rect x="1" y="3" width="10" height="12" fill="#d9cab3" />
+      <rect x="3" y="5" width="6" height="1" fill="#5e0b15" />
+      <rect x="3" y="7" width="6" height="1" fill="#5e0b15" />
+      <rect x="3" y="9" width="4" height="1" fill="#5e0b15" />
+      <rect x="3" y="11" width="5" height="1" fill="#5e0b15" />
     </svg>
   )
 }
@@ -239,12 +239,12 @@ function PixelBook() {
       aria-hidden="true"
       shapeRendering="crispEdges"
     >
-      <rect x="2" y="2" width="12" height="12" fill="#6b0f1a" />
-      <rect x="3" y="3" width="9" height="10" fill="#9b1b2e" />
-      <rect x="12" y="3" width="1" height="10" fill="#c4a35a" />
-      <rect x="5" y="5" width="5" height="1" fill="#f2e8e4" />
-      <rect x="5" y="7" width="5" height="1" fill="#f2e8e4" />
-      <rect x="5" y="9" width="3" height="1" fill="#f2e8e4" />
+      <rect x="2" y="2" width="12" height="12" fill="#5e0b15" />
+      <rect x="3" y="3" width="9" height="10" fill="#90323d" />
+      <rect x="12" y="3" width="1" height="10" fill="#bc8034" />
+      <rect x="5" y="5" width="5" height="1" fill="#d9cab3" />
+      <rect x="5" y="7" width="5" height="1" fill="#d9cab3" />
+      <rect x="5" y="9" width="3" height="1" fill="#d9cab3" />
     </svg>
   )
 }
