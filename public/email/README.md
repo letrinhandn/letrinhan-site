@@ -2,7 +2,7 @@
 
 Preview + copy page (after deploy):
 
-https://letrinhan-site.vercel.app/email/signature.html
+https://letrinhandn.github.io/letrinhan-site/email/signature.html
 
 ## Gmail
 1. Open the preview page → **Copy chữ ký VI** (or English).

@@ -1,5 +1,8 @@
 export type Locale = 'vi' | 'en'
 
+const asset = (path: string) =>
+  `${import.meta.env.BASE_URL}${path.replace(/^\//, '')}`
+
 export type LocalizedWork = {
   id: string
   href: string
@@ -37,7 +40,7 @@ export const gardenWorks: LocalizedWork[] = [
       en: 'Growth, macro, Solow-Swan',
     },
     href: 'https://letrinhandn.github.io/economic-lab/',
-    icon: '/lab-economic.svg',
+    icon: asset('lab-economic.svg'),
     badge: { vi: 'Notebook', en: 'Notebook' },
   },
   {
@@ -48,7 +51,7 @@ export const gardenWorks: LocalizedWork[] = [
       en: 'Quant finance theory and risk',
     },
     href: 'https://letrinhandn.github.io/quant-theory-lab/',
-    icon: '/lab-quant.svg',
+    icon: asset('lab-quant.svg'),
     badge: { vi: 'Notebook', en: 'Notebook' },
   },
   {
@@ -59,7 +62,7 @@ export const gardenWorks: LocalizedWork[] = [
       en: 'Memos, alphas, research reports',
     },
     href: 'https://letrinhandn.github.io/investment-research-lab/',
-    icon: '/lab-investment.svg',
+    icon: asset('lab-investment.svg'),
     badge: { vi: 'Notebook', en: 'Notebook' },
   },
 ]
@@ -73,7 +76,7 @@ export const appWorks: LocalizedWork[] = [
       en: 'AI document manager application',
     },
     href: 'https://rafetus.vn',
-    icon: '/rafetus-icon.jpg',
+    icon: asset('rafetus-icon.jpg'),
     badge: { vi: 'Ứng dụng', en: 'Application' },
   },
   {
@@ -84,7 +87,7 @@ export const appWorks: LocalizedWork[] = [
       en: 'Bloomberg Terminal inspired trading platform',
     },
     href: 'https://terminal-trade-iota.vercel.app',
-    icon: '/terminal-trade-logo.svg',
+    icon: asset('terminal-trade-logo.svg'),
     badge: { vi: 'Ứng dụng', en: 'Application' },
   },
 ]
@@ -101,7 +104,7 @@ export const electronicsWorks: LocalizedWork[] = [
       en: 'Classic typewriter cyberdeck',
     },
     href: 'https://github.com/letrinhandn/retro-typewriter-cyberdeck',
-    icon: '/cyberdeck-icon.jpg',
+    icon: asset('cyberdeck-icon.jpg'),
     badge: { vi: 'Phần cứng', en: 'Hardware' },
   },
 ]
@@ -115,7 +118,7 @@ export const gameWorks: LocalizedWork[] = [
       en: 'Multiplayer stock market board game',
     },
     href: 'https://comrade-lenan.itch.io/ticker',
-    icon: '/ticker-icon.jpg',
+    icon: asset('ticker-icon.jpg'),
     badge: { vi: 'Game', en: 'Game' },
   },
 ]

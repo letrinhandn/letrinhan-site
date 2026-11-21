@@ -505,7 +505,7 @@ export default function App() {
           <header className="identity" aria-label={ui.profile[locale]}>
             <img
               className="avatar"
-              src="/avatar.jpg"
+              src={`${import.meta.env.BASE_URL}avatar.jpg`}
               alt={locale === 'vi' ? 'Lê Trí Nhân' : 'Le Tri Nhan'}
               width={112}
               height={112}
