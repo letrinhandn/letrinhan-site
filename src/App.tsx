@@ -377,8 +377,10 @@ function LangToggle({
 
 export default function App() {
   const [ready, setReady] = useState(false)
+  const [drawerOpen, setDrawerOpen] = useState(false)
   const [locale, setLocale] = useState<Locale>(() => detectLocale())
   const siteRef = useRef<HTMLDivElement>(null)
+  const drawerCloseRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
     const id = requestAnimationFrame(() => setReady(true))
@@ -391,6 +393,20 @@ export default function App() {
     document.title =
       locale === 'vi' ? 'Lê Trí Nhân' : 'Le Tri Nhan'
   }, [locale])
+
+  useEffect(() => {
+    if (!drawerOpen) return
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setDrawerOpen(false)
+    }
+    document.addEventListener('keydown', onKey)
+    document.body.style.overflow = 'hidden'
+    drawerCloseRef.current?.focus()
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.body.style.overflow = ''
+    }
+  }, [drawerOpen])
 
   // Desktop-only cursor spotlight on the burgundy backdrop.
   useEffect(() => {
@@ -465,42 +481,80 @@ export default function App() {
   }, [locale])
 
   return (
-    <div ref={siteRef} className={`site${ready ? ' is-ready' : ''}`}>
+    <div
+      ref={siteRef}
+      className={`site${ready ? ' is-ready' : ''}${drawerOpen ? ' is-drawer-open' : ''}`}
+    >
       <GlyphField />
       <div className="cursor-glow" aria-hidden="true" />
       <div className="scanlines" aria-hidden="true" />
 
-      <div className="shell">
-        <aside className="notebook-rail" aria-label={ui.notebooks[locale]}>
-          <p className="notebook-rail-label">{ui.notebooks[locale]}</p>
-          <p className="notebook-rail-hint">{ui.notebooksHint[locale]}</p>
-          <nav className="notebook-nav">
-            {notebooks.map((work) => (
-              <a
-                key={work.id}
-                className="notebook-nav-link"
-                href={work.href}
-                target="_blank"
-                rel="noreferrer noopener"
-              >
-                {work.icon ? (
-                  <img
-                    className="notebook-nav-icon"
-                    src={work.icon}
-                    alt=""
-                    width={28}
-                    height={28}
-                  />
-                ) : null}
-                <span className="notebook-nav-copy">
-                  <span className="notebook-nav-title">{work.title}</span>
-                  <span className="notebook-nav-blurb">{work.blurb}</span>
-                </span>
-              </a>
-            ))}
-          </nav>
-        </aside>
+      <button
+        type="button"
+        className="notebook-drawer-toggle"
+        aria-expanded={drawerOpen}
+        aria-controls="notebook-drawer"
+        onClick={() => setDrawerOpen(true)}
+      >
+        {ui.notebooks[locale]}
+      </button>
 
+      <div
+        className="notebook-drawer-backdrop"
+        hidden={!drawerOpen}
+        onClick={() => setDrawerOpen(false)}
+        aria-hidden="true"
+      />
+
+      <aside
+        id="notebook-drawer"
+        className="notebook-drawer"
+        aria-label={ui.notebooks[locale]}
+        aria-hidden={!drawerOpen}
+      >
+        <div className="notebook-drawer-head">
+          <div>
+            <p className="notebook-rail-label">{ui.notebooks[locale]}</p>
+            <p className="notebook-rail-hint">{ui.notebooksHint[locale]}</p>
+          </div>
+          <button
+            ref={drawerCloseRef}
+            type="button"
+            className="notebook-drawer-close"
+            onClick={() => setDrawerOpen(false)}
+          >
+            {ui.notebooksClose[locale]}
+          </button>
+        </div>
+        <nav className="notebook-nav">
+          {notebooks.map((work) => (
+            <a
+              key={work.id}
+              className="notebook-nav-link"
+              href={work.href}
+              target="_blank"
+              rel="noreferrer noopener"
+              onClick={() => setDrawerOpen(false)}
+            >
+              {work.icon ? (
+                <img
+                  className="notebook-nav-icon"
+                  src={work.icon}
+                  alt=""
+                  width={28}
+                  height={28}
+                />
+              ) : null}
+              <span className="notebook-nav-copy">
+                <span className="notebook-nav-title">{work.title}</span>
+                <span className="notebook-nav-blurb">{work.blurb}</span>
+              </span>
+            </a>
+          ))}
+        </nav>
+      </aside>
+
+      <div className="shell">
         <main className="page">
           <header className="identity" aria-label={ui.profile[locale]}>
             <img
