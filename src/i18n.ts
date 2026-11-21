@@ -138,6 +138,9 @@ export const gardenWorks: LocalizedWork[] = notebookNav.map((item) => ({
   badge: { vi: 'Notebook', en: 'Notebook' },
 }))
 
+const techPost = (slug: string) =>
+  `https://letrinhandn.github.io/tech-lab/posts/${slug}/`
+
 export const appWorks: LocalizedWork[] = [
   {
     id: 'rafetus',
@@ -146,7 +149,7 @@ export const appWorks: LocalizedWork[] = [
       vi: 'Ứng dụng quản lý tài liệu bằng AI',
       en: 'AI document manager application',
     },
-    href: 'https://rafetus.vn',
+    href: techPost('rafetus'),
     icon: asset('rafetus-icon.jpg'),
     badge: { vi: 'Ứng dụng', en: 'Application' },
   },
@@ -157,7 +160,7 @@ export const appWorks: LocalizedWork[] = [
       vi: 'Nền tảng giao dịch kiểu Bloomberg Terminal',
       en: 'Bloomberg Terminal inspired trading platform',
     },
-    href: 'https://terminal-trade-iota.vercel.app',
+    href: techPost('terminal-trade'),
     icon: asset('terminal-trade-logo.svg'),
     badge: { vi: 'Ứng dụng', en: 'Application' },
   },
@@ -174,7 +177,7 @@ export const electronicsWorks: LocalizedWork[] = [
       vi: 'Cyberdeck máy đánh chữ cổ điển',
       en: 'Classic typewriter cyberdeck',
     },
-    href: 'https://github.com/letrinhandn/retro-typewriter-cyberdeck',
+    href: techPost('retro-typewriter-cyberdeck'),
     icon: asset('cyberdeck-icon.jpg'),
     badge: { vi: 'Phần cứng', en: 'Hardware' },
   },
@@ -188,7 +191,7 @@ export const gameWorks: LocalizedWork[] = [
       vi: 'Game board đa người chơi về thị trường chứng khoán',
       en: 'Multiplayer stock market board game',
     },
-    href: 'https://comrade-lenan.itch.io/ticker',
+    href: techPost('ticker'),
     icon: asset('ticker-icon.jpg'),
     badge: { vi: 'Game', en: 'Game' },
   },
