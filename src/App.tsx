@@ -178,6 +178,17 @@ const links: SiteLink[] = [
       en: 'LEAN backtests and trading strategies.',
     },
   },
+  {
+    label: 'CrunchDAO',
+    href: 'https://hub.crunchdao.com/users/comradelenan',
+    icon: 'crunchdao',
+    handle: '@comradelenan',
+    accent: '#e8e8e8',
+    blurb: {
+      vi: 'Cuộc thi dữ liệu và mô hình trên CrunchDAO.',
+      en: 'Data competitions and models on CrunchDAO.',
+    },
+  },
 ]
 
 const featuredIds = ['rafetus'] as const
