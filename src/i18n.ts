@@ -76,7 +76,7 @@ export type NotebookNav = {
   blurb: Record<Locale, string>
 }
 
-/** Top-nav notebook pages — Tech | Economics | avatar(root) | Quant | Finance */
+/** Top-nav notebook pages — Tech | Economics | avatar(root) | Policy | Finance */
 export const notebookNav: NotebookNav[] = [
   {
     id: 'tech-lab',
@@ -99,13 +99,13 @@ export const notebookNav: NotebookNav[] = [
     },
   },
   {
-    id: 'quant-theory-lab',
-    href: 'https://letrinhandn.github.io/quant-theory-lab/',
-    nav: { vi: 'Quant', en: 'Quant' },
-    title: { vi: 'Quant Theory Lab', en: 'Quant Theory Lab' },
+    id: 'policy-lab',
+    href: 'https://letrinhandn.github.io/policy-lab/',
+    nav: { vi: 'Policy', en: 'Policy' },
+    title: { vi: 'Policy Lab', en: 'Policy Lab' },
     blurb: {
-      vi: 'Tiểu luận và projects về lý thuyết định lượng',
-      en: 'Personal essays and projects in quant theory',
+      vi: 'Tiểu luận và ghi chú về chính sách công',
+      en: 'Essays and notes on public policy',
     },
   },
   {
@@ -114,8 +114,8 @@ export const notebookNav: NotebookNav[] = [
     nav: { vi: 'Finance', en: 'Finance' },
     title: { vi: 'Investment Research Lab', en: 'Investment Research Lab' },
     blurb: {
-      vi: 'Tiểu luận và projects nghiên cứu đầu tư',
-      en: 'Personal essays and projects in investment research',
+      vi: 'Nghiên cứu đầu tư và lý thuyết định lượng',
+      en: 'Investment research and quantitative theory',
     },
   },
 ]
@@ -131,8 +131,8 @@ export const gardenWorks: LocalizedWork[] = notebookNav.map((item) => ({
       ? 'lab-quant.svg'
       : item.id === 'economic-lab'
         ? 'lab-economic.svg'
-        : item.id === 'quant-theory-lab'
-          ? 'lab-quant.svg'
+        : item.id === 'policy-lab'
+          ? 'lab-economic.svg'
           : 'lab-investment.svg',
   ),
   badge: { vi: 'Notebook', en: 'Notebook' },
