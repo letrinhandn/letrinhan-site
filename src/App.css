@@ -865,33 +865,49 @@
 }
 
 @media (max-width: 720px) {
+  /* Keep the same 3-col hub header as desktop — never stack nav under the avatar. */
   .site-header {
-    --logo-size: 128px;
+    --logo-size: 112px;
     --logo-compact: 36px;
-    padding-inline: 1rem;
-    height: auto;
+    --logo-gap: 0.7rem;
+    --header-pad-y: 0.45rem;
+    padding-inline: 3.4rem 3.4rem;
+    height: calc(var(--logo-compact) + var(--header-pad-y) * 2 + 3px);
     min-height: calc(var(--logo-compact) + var(--header-pad-y) * 2 + 3px);
   }
 
   .site-header-bar {
-    grid-template-columns: 1fr;
-    justify-items: center;
-    gap: 0.45rem;
-    height: auto;
-    padding-block: 0.15rem 0.35rem;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    justify-items: stretch;
+    column-gap: var(--nav-gap);
+    height: 100%;
+    padding-block: 0;
   }
 
-  .site-nav-left,
+  .site-nav {
+    gap: 0.2rem 0.25rem;
+  }
+
+  .site-nav-left {
+    justify-content: flex-end;
+  }
+
   .site-nav-right {
-    justify-content: center;
+    justify-content: flex-start;
+  }
+
+  .site-nav-link {
+    padding: 0.25rem 0.35rem;
+    font-size: 0.62rem;
+    letter-spacing: 0.02em;
   }
 
   .site-logo-slot {
-    display: none;
+    display: block;
   }
 
   .hero {
-    padding-top: 5.1rem;
+    padding-top: 4.6rem;
   }
 
   .hero-name {
@@ -899,9 +915,39 @@
   }
 
   .site-controls {
-    top: 0.45rem;
-    right: 0.65rem;
-    transform: none;
+    top: 50%;
+    right: 0.45rem;
+    transform: translateY(-50%);
+    gap: 0.3rem;
+  }
+
+  .header-chip {
+    min-width: 2.15rem;
+    min-height: 1.55rem;
+    padding: 0.25rem 0.4rem;
+    font-size: 0.36rem;
+  }
+
+  .header-chip.is-icon {
+    min-width: 1.55rem;
+    padding: 0.22rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .site-header {
+    --logo-size: 96px;
+    --logo-compact: 32px;
+    padding-inline: 3rem;
+  }
+
+  .site-nav-link {
+    font-size: 0.56rem;
+    padding: 0.2rem 0.28rem;
+  }
+
+  .hero {
+    padding-top: 4.1rem;
   }
 }
 

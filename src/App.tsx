@@ -455,11 +455,20 @@ export default function App() {
       if (frame) return
       frame = requestAnimationFrame(sync)
     }
+    // pageshow covers bfcache Back from labs (Finance/Tech/…)
+    const onPageShow = () => {
+      cancelAnimationFrame(frame)
+      frame = requestAnimationFrame(sync)
+    }
     sync()
     window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('pageshow', onPageShow)
+    window.addEventListener('resize', onPageShow)
     return () => {
       cancelAnimationFrame(frame)
       window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('pageshow', onPageShow)
+      window.removeEventListener('resize', onPageShow)
     }
   }, [])
 
