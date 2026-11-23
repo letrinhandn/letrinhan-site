@@ -9,6 +9,7 @@ import {
   electronicsWorks,
   gameWorks,
   notebookNav,
+  resolveSiteHref,
   researchWorks,
   storeLocale,
   storeTheme,
@@ -199,7 +200,7 @@ function localizeWork(work: LocalizedWork, locale: Locale): Work {
     title: work.title[locale],
     blurb: work.blurb[locale],
     badge: work.badge[locale],
-    href: work.href,
+    href: resolveSiteHref(work.href),
     icon: work.icon,
     mark: work.mark,
     kind: work.kind,
@@ -565,14 +566,14 @@ export default function App() {
           <nav className="site-nav site-nav-left" aria-label={ui.notebooks[locale]}>
             <a
               className="site-nav-link"
-              href={notebookNav[0].href}
+              href={resolveSiteHref(notebookNav[0].href)}
               title={notebookNav[0].title[locale]}
             >
               {notebookNav[0].nav[locale]}
             </a>
             <a
               className="site-nav-link"
-              href={notebookNav[1].href}
+              href={resolveSiteHref(notebookNav[1].href)}
               title={notebookNav[1].title[locale]}
             >
               {notebookNav[1].nav[locale]}
@@ -598,14 +599,14 @@ export default function App() {
           <nav className="site-nav site-nav-right" aria-label={ui.notebooks[locale]}>
             <a
               className="site-nav-link"
-              href={notebookNav[2].href}
+              href={resolveSiteHref(notebookNav[2].href)}
               title={notebookNav[2].title[locale]}
             >
               {notebookNav[2].nav[locale]}
             </a>
             <a
               className="site-nav-link"
-              href={notebookNav[3].href}
+              href={resolveSiteHref(notebookNav[3].href)}
               title={notebookNav[3].title[locale]}
             >
               {notebookNav[3].nav[locale]}
