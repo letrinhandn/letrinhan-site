@@ -76,7 +76,40 @@ export type NotebookNav = {
   blurb: Record<Locale, string>
 }
 
-/** Top-nav notebook pages — Tech | Economics | avatar(root) | Policy | Finance */
+/** Local preview ports — keep in sync with `quarto preview` / Vite boot */
+export const LOCAL_SITE_BASE: Record<string, string> = {
+  'tech-lab': 'http://127.0.0.1:4202/',
+  'economic-lab': 'http://127.0.0.1:4203/',
+  'policy-lab': 'http://127.0.0.1:4204/',
+  'philosophy-lab': 'http://127.0.0.1:4201/',
+  'letrinhan-site': 'http://127.0.0.1:5173/letrinhan-site/',
+}
+
+export function isLocalHost(): boolean {
+  if (typeof window === 'undefined') return false
+  const host = window.location.hostname
+  return host === 'localhost' || host === '127.0.0.1'
+}
+
+/** Rewrite github.io lab/hub URLs to local preview ports when running locally. */
+export function resolveSiteHref(href: string): string {
+  if (!href || !isLocalHost()) return href
+  try {
+    const url = new URL(href, window.location.origin)
+    if (!url.hostname.endsWith('github.io')) return href
+    const parts = url.pathname.split('/').filter(Boolean)
+    const key = parts[0]
+    if (!key || !(key in LOCAL_SITE_BASE)) return href
+    const base = LOCAL_SITE_BASE[key]
+    const rest = parts.slice(1).join('/')
+    if (!rest) return base
+    return `${base}${rest}${url.pathname.endsWith('/') ? '/' : ''}`
+  } catch {
+    return href
+  }
+}
+
+/** Top-nav notebook pages — Tech | Economics | avatar(root) | Policy | Philosophy */
 export const notebookNav: NotebookNav[] = [
   {
     id: 'tech-lab',
@@ -94,8 +127,8 @@ export const notebookNav: NotebookNav[] = [
     nav: { vi: 'Economics', en: 'Economics' },
     title: { vi: 'Economic Lab', en: 'Economic Lab' },
     blurb: {
-      vi: 'Tiểu luận và công trình cá nhân về kinh tế học',
-      en: 'Personal essays and works in economics',
+      vi: 'Kinh tế, nghiên cứu đầu tư và lý thuyết định lượng',
+      en: 'Economics, investment research, and quantitative theory',
     },
   },
   {
@@ -109,13 +142,13 @@ export const notebookNav: NotebookNav[] = [
     },
   },
   {
-    id: 'investment-research-lab',
-    href: 'https://letrinhandn.github.io/investment-research-lab/',
-    nav: { vi: 'Finance', en: 'Finance' },
-    title: { vi: 'Investment Research Lab', en: 'Investment Research Lab' },
+    id: 'philosophy-lab',
+    href: 'https://letrinhandn.github.io/philosophy-lab/',
+    nav: { vi: 'Philosophy', en: 'Philosophy' },
+    title: { vi: 'Philosophy Lab', en: 'Philosophy Lab' },
     blurb: {
-      vi: 'Nghiên cứu đầu tư và lý thuyết định lượng',
-      en: 'Investment research and quantitative theory',
+      vi: 'Tiểu luận và ghi chú về triết học',
+      en: 'Essays and notes on philosophy',
     },
   },
 ]
@@ -133,7 +166,7 @@ export const gardenWorks: LocalizedWork[] = notebookNav.map((item) => ({
         ? 'lab-economic.svg'
         : item.id === 'policy-lab'
           ? 'lab-economic.svg'
-          : 'lab-investment.svg',
+          : 'lab-investment.svg', // philosophy
   ),
   badge: { vi: 'Notebook', en: 'Notebook' },
 }))
