@@ -18,19 +18,13 @@ export const ui = {
   home: { vi: 'Trang chủ', en: 'Home' },
   tech: { vi: 'Tech', en: 'Tech' },
   featured: { vi: 'Nổi bật', en: 'Featured' },
-  notebooks: { vi: 'Labs', en: 'Labs' },
+  notebooks: { vi: 'Notebooks', en: 'Notebooks' },
   apps: { vi: 'Ứng dụng', en: 'Apps' },
   electronics: { vi: 'Điện tử', en: 'Electronics' },
   games: { vi: 'Game', en: 'Games' },
   research: { vi: 'Nghiên cứu', en: 'Research' },
   profile: { vi: 'Hồ sơ', en: 'Profile' },
   profiles: { vi: 'Liên kết', en: 'Profiles' },
-  overview: { vi: 'Tổng quan', en: 'Overview' },
-  menu: { vi: 'Mở menu', en: 'Open menu' },
-  closeMenu: { vi: 'Đóng menu', en: 'Close menu' },
-  labs: { vi: 'Labs', en: 'Labs' },
-  works: { vi: 'Works', en: 'Works' },
-  live: { vi: 'Đang mở', en: 'Ongoing' },
   langSwitch: { vi: 'Đổi sang English', en: 'Switch to Tiếng Việt' },
   themeLight: { vi: 'Sáng', en: 'Light' },
   themeDark: { vi: 'Tối', en: 'Dark' },
@@ -71,7 +65,7 @@ export function detectTheme(): Theme {
 export function applyTheme(theme: Theme): void {
   document.documentElement.dataset.theme = theme
   const meta = document.querySelector('meta[name="theme-color"]')
-  if (meta) meta.setAttribute('content', theme === 'dark' ? '#0f0f0f' : '#f4f1ef')
+  if (meta) meta.setAttribute('content', theme === 'dark' ? '#5e0b15' : '#f7f1ed')
 }
 
 export type NotebookNav = {
