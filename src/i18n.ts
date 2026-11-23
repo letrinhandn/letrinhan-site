@@ -144,7 +144,7 @@ export const notebookNav: NotebookNav[] = [
   {
     id: 'philosophy-lab',
     href: 'https://letrinhandn.github.io/philosophy-lab/',
-    nav: { vi: 'Philosophy', en: 'Philosophy' },
+    nav: { vi: 'Triết', en: 'Phil' },
     title: { vi: 'Philosophy Lab', en: 'Philosophy Lab' },
     blurb: {
       vi: 'Tiểu luận và ghi chú về triết học',
