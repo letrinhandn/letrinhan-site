@@ -612,10 +612,6 @@ export default function App() {
             </a>
           </nav>
         </div>
-        <div className="site-controls">
-          <ThemeToggle theme={theme} locale={locale} onChange={setTheme} />
-          <LangToggle locale={locale} onChange={setLocale} />
-        </div>
       </header>
 
       <div className="shell">
@@ -657,6 +653,13 @@ export default function App() {
           </div>
         </main>
       </div>
+
+      <footer className="site-footer">
+        <div className="site-controls">
+          <ThemeToggle theme={theme} locale={locale} onChange={setTheme} />
+          <LangToggle locale={locale} onChange={setLocale} />
+        </div>
+      </footer>
     </div>
   )
 }
