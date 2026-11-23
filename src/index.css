@@ -1,12 +1,14 @@
 :root {
-  --burgundy: #5e0b15;
-  --burgundy-mid: #90323d;
-  --burgundy-bright: #90323d;
-  --burgundy-deep: #5e0b15;
-  --gold: #bc8034;
-  --font-pixel: "Press Start 2P", monospace;
-  --font-body: "Be Vietnam Pro", "Helvetica Neue", sans-serif;
-  font-family: var(--font-body);
+  /* Đỏ đô — Crunch orange → burgundy primary */
+  --primary: #8b1538;
+  --primary-bright: #a81e45;
+  --primary-deep: #5e0b15;
+  --primary-soft: rgba(139, 21, 56, 0.18);
+
+  --font-sans: "Outfit", "Be Vietnam Pro", "Helvetica Neue", sans-serif;
+  --font-mono: "IBM Plex Mono", "SF Mono", ui-monospace, monospace;
+
+  font-family: var(--font-sans);
   font-size: 16px;
   line-height: 1.5;
   font-synthesis: none;
@@ -15,32 +17,45 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Dark — root page burgundy field */
 :root,
 :root[data-theme='dark'] {
-  --ink: #5e0b15;
-  --paper: #d9cab3;
-  --paper-dim: #8c7a6b;
-  --surface: #3a070e;
-  --surface-raised: #5e0b15;
-  --rule: rgba(217, 202, 179, 0.28);
-  --page-fg: var(--paper);
-  --page-bg: var(--burgundy);
+  --bg: #0f0f0f;
+  --bg-elevated: #141414;
+  --surface: #1a1a1a;
+  --surface-2: #212121;
+  --surface-3: #2a2a2a;
+  --border: #2e2e2e;
+  --border-strong: #3a3a3a;
+  --text: #f2f2f2;
+  --text-muted: #9a9a9a;
+  --text-dim: #6e6e6e;
+  --success: #1faa5a;
+  --ticker-bg: #0a0a0a;
+  --sidebar-bg: #121212;
+  --page-fg: var(--text);
+  --page-bg: var(--bg);
   color: var(--page-fg);
   background: var(--page-bg);
   color-scheme: dark;
 }
 
-/* Light — ivory paper like lab pages */
 :root[data-theme='light'] {
-  --ink: #5e0b15;
-  --paper: #d9cab3;
-  --paper-dim: #8c7a6b;
-  --surface: #fffdfb;
-  --surface-raised: #ffffff;
-  --rule: rgba(94, 11, 21, 0.14);
-  --page-fg: #5e0b15;
-  --page-bg: #f7f1ed;
+  --bg: #f4f1ef;
+  --bg-elevated: #faf8f6;
+  --surface: #ffffff;
+  --surface-2: #f7f4f2;
+  --surface-3: #efeae6;
+  --border: rgba(94, 11, 21, 0.12);
+  --border-strong: rgba(94, 11, 21, 0.2);
+  --text: #1a0a0c;
+  --text-muted: #6b5559;
+  --text-dim: #8c7a6b;
+  --success: #1a7a45;
+  --ticker-bg: #1a0a0c;
+  --sidebar-bg: #fffdfb;
+  --primary-soft: rgba(139, 21, 56, 0.1);
+  --page-fg: var(--text);
+  --page-bg: var(--bg);
   color: var(--page-fg);
   background: var(--page-bg);
   color-scheme: light;
@@ -53,7 +68,7 @@
 }
 
 html {
-  scroll-padding-top: 4.5rem;
+  scroll-padding-top: 4rem;
 }
 
 html,
@@ -80,7 +95,12 @@ img {
   max-width: 100%;
 }
 
+button {
+  font: inherit;
+  color: inherit;
+}
+
 ::selection {
-  background: var(--gold);
-  color: var(--ink);
+  background: var(--primary);
+  color: #fff;
 }
