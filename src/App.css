@@ -3,7 +3,9 @@
   --my: 18%;
   position: relative;
   width: 100%;
+  max-width: 100%;
   min-height: 100vh;
+  overflow-x: clip;
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -96,6 +98,8 @@
   z-index: 0;
   width: 100%;
   height: 100%;
+  max-width: 100%;
+  max-height: 100%;
   opacity: 0.9;
   transition: opacity 0.2s steps(4, end);
 }
@@ -121,29 +125,25 @@
   position: fixed;
   inset: 0;
   z-index: 2;
-  opacity: 0.05;
+  opacity: 0.04;
+  /* Cheaper than a dense 2px repeat across the full viewport */
   background: repeating-linear-gradient(
     0deg,
     transparent,
-    transparent 2px,
-    rgba(0, 0, 0, 0.45) 2px,
-    rgba(0, 0, 0, 0.45) 4px
+    transparent 3px,
+    rgba(0, 0, 0, 0.4) 3px,
+    rgba(0, 0, 0, 0.4) 4px
   );
+  will-change: auto;
+  contain: strict;
 }
 
 .site-header {
   --logo-size: 148px;
   --logo-compact: 40px;
-  --logo-gap: 1.25rem;
   --logo-scale: calc(
     1 - var(--p, 0) * (1 - var(--logo-compact) / var(--logo-size))
   );
-  /* Slot shrinks with avatar so nav text hugs the compact logo. */
-  --logo-slot: calc(
-    var(--logo-size) -
-      var(--p, 0) * (var(--logo-size) - var(--logo-compact) - var(--logo-gap))
-  );
-  --nav-gap: calc(1.5rem - var(--p, 0) * 0.85rem);
   --header-pad-y: 0.55rem;
   --nav-cream: #d9cab3;
   --p: 0;
@@ -151,58 +151,42 @@
   top: 0;
   z-index: 30;
   width: 100%;
+  max-width: 100%;
   flex: 0 0 auto;
   box-sizing: border-box;
-  height: calc(var(--logo-compact) + var(--header-pad-y) * 2 + 3px);
-  padding: var(--header-pad-y) 1rem;
+  padding: 0;
   background: #3a070e;
   border-bottom: 3px solid var(--nav-cream);
   color: var(--nav-cream);
   overflow: visible;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
 }
 
 .site-header-bar {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  grid-template-columns: auto 1fr auto;
   align-items: center;
-  column-gap: var(--nav-gap);
-  /* Wider strip so Phil/Policy vs Tech/Economics stay visually balanced */
-  width: min(780px, 100%);
-  height: 100%;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.site-nav {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.35rem 0.55rem;
+  column-gap: 0.75rem;
+  width: 100%;
+  box-sizing: border-box;
+  height: calc(var(--logo-compact) + var(--header-pad-y) * 2);
+  padding: var(--header-pad-y) 1rem;
   min-width: 0;
 }
 
-.site-nav-left {
-  justify-content: flex-end;
-}
-
-.site-nav-right {
-  justify-content: flex-start;
-}
-
-/* Keeps HOME/ECONOMICS and QUANT/FINANCE evenly spaced around center. */
-.site-logo-slot {
-  width: var(--logo-slot);
-  height: 1px;
-  visibility: hidden;
-  pointer-events: none;
+.site-menu-btn {
+  z-index: 45;
+  justify-self: start;
 }
 
 /* Absolute logo: layout never reflows; only transform scales on the compositor. */
 .site-logo {
   position: absolute;
   left: 50%;
-  top: 0;
+  top: var(--header-pad-y);
   z-index: 40;
   display: block;
   width: var(--logo-size);
@@ -214,27 +198,92 @@
   line-height: 0;
 }
 
-.site-footer {
-  position: relative;
-  z-index: 5;
-  isolation: isolate;
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 3.25rem;
-  margin-top: auto;
-  padding: 0.75rem 1rem;
-  /* Match .site-header chrome exactly */
-  background: #3a070e;
-  border-top: 3px solid #d9cab3;
-  color: #d9cab3;
+.site-drawer-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  visibility: hidden;
 }
 
-.site[data-theme='light'] .site-footer {
-  background: #3a070e;
-  border-top-color: #d9cab3;
+.site-drawer-layer.is-open {
+  pointer-events: auto;
+  visibility: visible;
+}
+
+.site-drawer-backdrop {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: rgba(10, 2, 4, 0.55);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s steps(4, end);
+}
+
+.site-drawer-layer.is-open .site-drawer-backdrop {
+  opacity: 1;
+}
+
+.site-drawer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  width: min(17.5rem, 84vw);
+  box-sizing: border-box;
+  padding: 1.1rem 0.9rem 1.25rem;
+  background: #2a050a;
+  border-right: 3px solid #d9cab3;
   color: #d9cab3;
+  transform: translateX(-105%);
+  transition: transform 0.22s steps(5, end);
+  overflow-y: auto;
+}
+
+.site-drawer-layer.is-open .site-drawer {
+  transform: translateX(0);
+}
+
+.site-drawer-label {
+  margin: 0 0 0.45rem;
+  padding: 0 0.55rem;
+  /* Be Vietnam Pro — Press Start 2P breaks Vietnamese diacritics */
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(217, 202, 179, 0.62);
+}
+
+.site-drawer-link {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.75rem 0.85rem;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  text-decoration: none;
+  color: #d9cab3;
+  border: 2px solid transparent;
+  background: transparent;
+}
+
+.site-drawer-link:hover,
+.site-drawer-link:focus-visible {
+  color: var(--gold, #bc8034);
+  border-color: #d9cab3;
+  outline: none;
 }
 
 .site-controls {
@@ -242,9 +291,10 @@
   z-index: 1;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.45rem;
+  justify-content: flex-end;
+  gap: 0.4rem;
   transform: none;
+  flex-shrink: 0;
 }
 
 .header-chip {
@@ -291,34 +341,6 @@
   outline: none;
 }
 
-.site-nav-link {
-  padding: 0.35rem 0.55rem;
-  font-family: var(--font-body);
-  font-size: 0.78rem;
-  font-weight: 650;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: rgba(217, 202, 179, 0.88);
-  border: 2px solid transparent;
-  transition:
-    color 0.1s steps(2, end),
-    border-color 0.1s steps(2, end),
-    background 0.1s steps(2, end);
-}
-
-.site-nav-link:hover,
-.site-nav-link:focus-visible {
-  color: var(--gold);
-  border-color: rgba(188, 128, 52, 0.55);
-  outline: none;
-}
-
-.site-nav-link.is-active {
-  color: var(--gold);
-  border-color: var(--nav-cream);
-  background: rgba(188, 128, 52, 0.12);
-}
-
 .shell {
   position: relative;
   z-index: 1;
@@ -360,7 +382,7 @@
   flex-direction: column;
   align-items: center;
   gap: 0.9rem;
-  padding: 5.75rem 0 1.75rem;
+  padding: 5.75rem 0 1.1rem;
   border-bottom: 3px solid var(--rule);
   text-align: center;
 }
@@ -380,20 +402,61 @@
 
 .hero-name {
   margin: 0.85rem 0 0;
-  font-family: var(--font-pixel);
-  /* Integer px keeps Press Start 2P crisp (no fractional blur) */
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 1.35;
+  /* Body font — Press Start 2P mangles Vietnamese diacritics (ế/ọ/â) */
+  font-family: var(--font-body);
+  font-size: clamp(1.35rem, 4.5vw, 1.75rem);
+  font-weight: 800;
+  line-height: 1.25;
   letter-spacing: 0.02em;
   color: var(--paper);
-  -webkit-font-smoothing: none;
-  -moz-osx-font-smoothing: unset;
-  text-rendering: geometricPrecision;
-  text-shadow: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
 }
 
+.hero-social {
+  margin-top: 0.15rem;
+}
 
+.social-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: min(100%, 42rem);
+  margin: 0 auto 2rem;
+}
+
+.social-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding: 0.55rem 0 1.15rem;
+  border-bottom: 3px solid var(--rule);
+}
+
+.social-groups > .social-group:first-child {
+  padding-top: 0.35rem;
+}
+
+.social-group-head {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.social-group-head .section-label {
+  text-align: left;
+  flex: 0 1 auto;
+  min-width: 0;
+  margin: 0;
+}
+
+.social-group-head .social {
+  justify-content: flex-end;
+  flex: 0 0 auto;
+  gap: 0.4rem;
+}
 
 .social {
   display: flex;
@@ -442,7 +505,9 @@
   left: 50%;
   top: calc(100% + 10px);
   z-index: 40;
-  width: min(210px, calc(100vw - 2.5rem));
+  /* Avoid 100vw — includes scrollbar and inflates scrollWidth (left-shift gutter) */
+  width: 210px;
+  max-width: min(210px, 18rem);
   padding: 0.55rem 0.6rem 0.6rem;
   color: var(--paper);
   background: var(--burgundy-deep);
@@ -603,16 +668,22 @@
     1px 1px 0 var(--ink);
 }
 
-.works {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
+.social-group .feature-grid {
+  width: 100%;
 }
 
-.work-section {
-  display: flex;
-  flex-direction: column;
-  gap: 0.9rem;
+.social-group .feature-grid:has(> li:only-child) {
+  grid-template-columns: 1fr;
+}
+
+.feature-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.feature-grid > li {
+  min-width: 0;
 }
 
 .section-label {
@@ -689,23 +760,39 @@
 .work-link.is-compact {
   height: 100%;
   grid-template-columns: 1fr;
-  justify-items: center;
-  text-align: center;
-  gap: 0.55rem;
-  padding: 0.75rem;
+  justify-items: stretch;
+  text-align: left;
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
 }
 
 .work-link.is-compact .work-icon,
 .work-link.is-compact .work-mark {
-  width: 48px;
-  height: 48px;
-  justify-self: center;
+  width: 100%;
+  height: 132px;
+  justify-self: stretch;
+  border: none;
+  border-bottom: 2px solid var(--paper);
+}
+
+.work-link.is-compact .work-icon {
+  object-fit: cover;
 }
 
 .work-link.is-compact .work-copy {
-  align-items: center;
+  align-items: flex-start;
   gap: 0.28rem;
   width: 100%;
+  padding: 0.7rem 0.75rem 0.8rem;
+}
+
+.work-link.is-compact .work-pin {
+  position: absolute;
+  top: 0.55rem;
+  right: 0.55rem;
+  z-index: 2;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55));
 }
 
 .work-link.is-compact .work-title {
@@ -820,6 +907,10 @@
     gap: 0.55rem;
   }
 
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+
   .work-link.is-compact {
     padding: 0.65rem;
   }
@@ -897,45 +988,14 @@
 }
 
 @media (max-width: 720px) {
-  /* Keep the same 3-col hub header as desktop — never stack nav under the avatar. */
   .site-header {
     --logo-size: 112px;
     --logo-compact: 36px;
-    --logo-gap: 0.7rem;
     --header-pad-y: 0.45rem;
-    padding-inline: 0.75rem;
-    height: calc(var(--logo-compact) + var(--header-pad-y) * 2 + 3px);
-    min-height: calc(var(--logo-compact) + var(--header-pad-y) * 2 + 3px);
   }
 
   .site-header-bar {
-    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-    justify-items: stretch;
-    column-gap: var(--nav-gap);
-    height: 100%;
-    padding-block: 0;
-  }
-
-  .site-nav {
-    gap: 0.2rem 0.25rem;
-  }
-
-  .site-nav-left {
-    justify-content: flex-end;
-  }
-
-  .site-nav-right {
-    justify-content: flex-start;
-  }
-
-  .site-nav-link {
-    padding: 0.25rem 0.35rem;
-    font-size: 0.62rem;
-    letter-spacing: 0.02em;
-  }
-
-  .site-logo-slot {
-    display: block;
+    padding-inline: 0.75rem;
   }
 
   .hero {
@@ -961,18 +1021,25 @@
     min-width: 1.7rem;
     padding: 0.26rem;
   }
+
+  .site-drawer {
+    width: min(16.5rem, 88vw);
+  }
+
+  .site-drawer-link {
+    font-size: 0.88rem;
+    padding: 0.65rem 0.75rem;
+  }
 }
 
 @media (max-width: 420px) {
   .site-header {
     --logo-size: 96px;
     --logo-compact: 32px;
-    padding-inline: 0.55rem;
   }
 
-  .site-nav-link {
-    font-size: 0.56rem;
-    padding: 0.2rem 0.28rem;
+  .site-header-bar {
+    padding-inline: 0.55rem;
   }
 
   .hero {
@@ -994,7 +1061,9 @@
   .social-btn,
   .social-preview,
   .work-link,
-  .site-nav-link,
+  .site-drawer-link,
+  .site-drawer,
+  .site-drawer-backdrop,
   .site-header,
   .header-chip,
   .hero-avatar,

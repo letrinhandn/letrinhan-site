@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "boot": "bash scripts/boot-local.sh",
+    "labs": "python3 scripts/lab_static_server.py",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview"

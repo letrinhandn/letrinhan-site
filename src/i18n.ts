@@ -18,17 +18,21 @@ export const ui = {
   home: { vi: 'Trang chủ', en: 'Home' },
   tech: { vi: 'Tech', en: 'Tech' },
   featured: { vi: 'Nổi bật', en: 'Featured' },
-  notebooks: { vi: 'Notebooks', en: 'Notebooks' },
-  apps: { vi: 'Ứng dụng', en: 'Apps' },
-  electronics: { vi: 'Điện tử', en: 'Electronics' },
-  games: { vi: 'Game', en: 'Games' },
-  research: { vi: 'Nghiên cứu', en: 'Research' },
+  notebooks: { vi: 'Sổ tay', en: 'Notebooks' },
   profile: { vi: 'Hồ sơ', en: 'Profile' },
   profiles: { vi: 'Liên kết', en: 'Profiles' },
+  socialSocial: { vi: 'Mạng xã hội', en: 'Social' },
+  socialMusic: { vi: 'Âm nhạc', en: 'Music' },
+  socialProgramming: { vi: 'Lập trình', en: 'Programming' },
+  socialResearch: { vi: 'Nghiên cứu', en: 'Research' },
+  socialEconomic: { vi: 'Kinh tế', en: 'Economic' },
+  socialPhilosophy: { vi: 'Triết học', en: 'Philosophy' },
   langSwitch: { vi: 'Đổi sang English', en: 'Switch to Tiếng Việt' },
   themeLight: { vi: 'Sáng', en: 'Light' },
   themeDark: { vi: 'Tối', en: 'Dark' },
   themeSwitch: { vi: 'Đổi giao diện', en: 'Toggle theme' },
+  menuOpen: { vi: 'Mở menu', en: 'Open menu' },
+  menuClose: { vi: 'Đóng menu', en: 'Close menu' },
 } as const
 
 export type Theme = 'dark' | 'light'
@@ -76,12 +80,15 @@ export type NotebookNav = {
   blurb: Record<Locale, string>
 }
 
-/** Local preview ports — keep in sync with `quarto preview` / Vite boot */
+/** Local preview ports — keep in sync with `scripts/boot-local.sh` / lab_static_server.py */
 export const LOCAL_SITE_BASE: Record<string, string> = {
   'tech-lab': 'http://127.0.0.1:4202/',
+  'programming-lab': 'http://127.0.0.1:4202/',
   'economic-lab': 'http://127.0.0.1:4203/',
   'policy-lab': 'http://127.0.0.1:4204/',
   'philosophy-lab': 'http://127.0.0.1:4201/',
+  'music-lab': 'http://127.0.0.1:4205/',
+  'research-lab': 'http://127.0.0.1:4206/',
   'letrinhan-site': 'http://127.0.0.1:5173/letrinhan-site/',
 }
 
@@ -91,7 +98,10 @@ export function isLocalHost(): boolean {
   return host === 'localhost' || host === '127.0.0.1'
 }
 
-/** Rewrite github.io lab/hub URLs to local preview ports when running locally. */
+/**
+ * On localhost, rewrite github.io lab/hub URLs to local ports.
+ * Boot labs with: `npm run boot` (or `bash scripts/boot-local.sh`).
+ */
 export function resolveSiteHref(href: string): string {
   if (!href || !isLocalHost()) return href
   try {
@@ -109,22 +119,22 @@ export function resolveSiteHref(href: string): string {
   }
 }
 
-/** Top-nav notebook pages — Tech | Economics | avatar(root) | Policy | Philosophy */
+/** Drawer notebook pages */
 export const notebookNav: NotebookNav[] = [
   {
     id: 'tech-lab',
     href: 'https://letrinhandn.github.io/tech-lab/',
-    nav: { vi: 'Tech', en: 'Tech' },
-    title: { vi: 'Tech Lab', en: 'Tech Lab' },
+    nav: { vi: 'Lập trình', en: 'Programming' },
+    title: { vi: 'Programming Lab', en: 'Programming Lab' },
     blurb: {
-      vi: 'Apps, điện tử và ghi chú xây dựng hệ thống',
-      en: 'Apps, electronics, and build notes',
+      vi: 'Apps, điện tử và ghi chú lập trình',
+      en: 'Apps, hardware, and programming notes',
     },
   },
   {
     id: 'economic-lab',
     href: 'https://letrinhandn.github.io/economic-lab/',
-    nav: { vi: 'Economics', en: 'Economics' },
+    nav: { vi: 'Kinh tế', en: 'Economics' },
     title: { vi: 'Economic Lab', en: 'Economic Lab' },
     blurb: {
       vi: 'Kinh tế, nghiên cứu đầu tư và lý thuyết định lượng',
@@ -132,9 +142,19 @@ export const notebookNav: NotebookNav[] = [
     },
   },
   {
+    id: 'research-lab',
+    href: 'https://letrinhandn.github.io/research-lab/',
+    nav: { vi: 'Nghiên cứu', en: 'Research' },
+    title: { vi: 'Research Lab', en: 'Research Lab' },
+    blurb: {
+      vi: 'Bài hội thảo và ghi chú nghiên cứu',
+      en: 'Conference papers and research notes',
+    },
+  },
+  {
     id: 'policy-lab',
     href: 'https://letrinhandn.github.io/policy-lab/',
-    nav: { vi: 'Policy', en: 'Policy' },
+    nav: { vi: 'Chính sách', en: 'Policy' },
     title: { vi: 'Policy Lab', en: 'Policy Lab' },
     blurb: {
       vi: 'Tiểu luận và ghi chú về chính sách công',
@@ -144,122 +164,153 @@ export const notebookNav: NotebookNav[] = [
   {
     id: 'philosophy-lab',
     href: 'https://letrinhandn.github.io/philosophy-lab/',
-    nav: { vi: 'Triết', en: 'Phil' },
+    nav: { vi: 'Triết học', en: 'Philosophy' },
     title: { vi: 'Philosophy Lab', en: 'Philosophy Lab' },
     blurb: {
       vi: 'Tiểu luận và ghi chú về triết học',
       en: 'Essays and notes on philosophy',
     },
   },
+  {
+    id: 'music-lab',
+    href: 'https://letrinhandn.github.io/music-lab/',
+    nav: { vi: 'Âm nhạc', en: 'Music' },
+    title: { vi: 'Music Lab', en: 'Music Lab' },
+    blurb: {
+      vi: 'Beats, sản xuất nhạc và ghi chú phát hành',
+      en: 'Beats, production notes, and release write-ups',
+    },
+  },
 ]
-
-/** Quarto knowledge vaults — hub cards if needed */
-export const gardenWorks: LocalizedWork[] = notebookNav.map((item) => ({
-  id: item.id,
-  title: item.title,
-  blurb: item.blurb,
-  href: item.href,
-  icon: asset(
-    item.id === 'tech-lab'
-      ? 'lab-quant.svg'
-      : item.id === 'economic-lab'
-        ? 'lab-economic.svg'
-        : item.id === 'policy-lab'
-          ? 'lab-economic.svg'
-          : 'lab-investment.svg', // philosophy
-  ),
-  badge: { vi: 'Notebook', en: 'Notebook' },
-}))
 
 const techPost = (slug: string) =>
   `https://letrinhandn.github.io/tech-lab/posts/${slug}/`
+const econPost = (slug: string) =>
+  `https://letrinhandn.github.io/economic-lab/posts/${slug}/`
+const researchPost = (slug: string) =>
+  `https://letrinhandn.github.io/research-lab/posts/${slug}/`
+const musicPost = (slug: string) =>
+  `https://letrinhandn.github.io/music-lab/posts/${slug}/`
 
-export const appWorks: LocalizedWork[] = [
-  {
-    id: 'rafetus',
-    title: { vi: 'Rafetus', en: 'Rafetus' },
-    blurb: {
-      vi: 'Ứng dụng quản lý tài liệu bằng AI',
-      en: 'AI document manager application',
-    },
-    href: techPost('rafetus'),
-    icon: asset('rafetus-icon.jpg'),
-    badge: { vi: 'Ứng dụng', en: 'Application' },
-  },
-  {
-    id: 'terminal-trade',
-    title: { vi: 'Terminal Trade', en: 'Terminal Trade' },
-    blurb: {
-      vi: 'Nền tảng giao dịch kiểu Bloomberg Terminal',
-      en: 'Bloomberg Terminal inspired trading platform',
-    },
-    href: techPost('terminal-trade'),
-    icon: asset('terminal-trade-logo.svg'),
-    badge: { vi: 'Ứng dụng', en: 'Application' },
-  },
-]
+export type SectionId =
+  | 'research'
+  | 'philosophy'
+  | 'economic'
+  | 'programming'
+  | 'music'
 
-export const electronicsWorks: LocalizedWork[] = [
-  {
-    id: 'retro-typewriter-cyberdeck',
-    title: {
-      vi: 'Retro Typewriter Cyberdeck',
-      en: 'Retro Typewriter Cyberdeck',
+/** Featured posts under each hub section (from the matching lab pages). */
+export const sectionFeatures: Record<SectionId, LocalizedWork[]> = {
+  research: [
+    {
+      id: 'vn-crypto-tax-p2p-pricing',
+      title: {
+        vi: 'Thuế và định giá P2P tài sản mã hóa tại Việt Nam',
+        en: 'Crypto-asset tax and P2P pricing in Vietnam',
+      },
+      blurb: {
+        vi: 'Hội thảo khoa học quốc gia — chính sách thuế và thị trường P2P',
+        en: 'National conference — tax policy and P2P markets',
+      },
+      href: researchPost('vn-crypto-tax-p2p-pricing'),
+      icon: asset('covers/crypto-tax.jpg'),
+      badge: { vi: 'Hội thảo', en: 'Conference' },
     },
-    blurb: {
-      vi: 'Cyberdeck máy đánh chữ cổ điển',
-      en: 'Classic typewriter cyberdeck',
+    {
+      id: 'ecommerce-informal-employment',
+      title: {
+        vi: 'Thương mại điện tử và việc làm phi chính thức tại Việt Nam',
+        en: 'E-commerce and informal employment in Vietnam',
+      },
+      blurb: {
+        vi: 'Hội thảo khoa học quốc gia — kinh tế số và cạnh tranh',
+        en: 'National conference — digital economy and competitiveness',
+      },
+      href: researchPost('ecommerce-informal-employment'),
+      icon: asset('covers/ecommerce.jpg'),
+      badge: { vi: 'Hội thảo', en: 'Conference' },
     },
-    href: techPost('retro-typewriter-cyberdeck'),
-    icon: asset('cyberdeck-icon.jpg'),
-    badge: { vi: 'Phần cứng', en: 'Hardware' },
-  },
-]
-
-export const gameWorks: LocalizedWork[] = [
-  {
-    id: 'ticker',
-    title: { vi: 'TICKER', en: 'TICKER' },
-    blurb: {
-      vi: 'Game board đa người chơi về thị trường chứng khoán',
-      en: 'Multiplayer stock market board game',
+  ],
+  philosophy: [],
+  economic: [
+    {
+      id: 'solow-swan-tang-truong',
+      title: {
+        vi: 'Những ghi chép về mô hình tăng trưởng Solow-Swan',
+        en: 'Notes on the Solow–Swan growth model',
+      },
+      blurb: {
+        vi: 'Từ Đại suy thoái và Harrod-Domar đến trạng thái dừng và quy tắc vàng',
+        en: 'From the Great Depression and Harrod–Domar to steady state and the golden rule',
+      },
+      href: econPost('solow-swan-tang-truong'),
+      icon: asset('covers/solow.jpg'),
+      badge: { vi: 'Lý thuyết', en: 'Theory' },
     },
-    href: techPost('ticker'),
-    icon: asset('ticker-icon.jpg'),
-    badge: { vi: 'Game', en: 'Game' },
-  },
-]
-
-export const researchWorks: LocalizedWork[] = [
-  {
-    id: 'vn-crypto-tax-p2p-pricing',
-    title: {
-      vi: 'Khơi thông nguồn lực tài chính từ thị trường tài sản mã hóa tại Việt Nam: Chính sách thuế và phản ứng định giá trên thị trường giao dịch ngang hàng',
-      en: 'Mobilising financial resources from crypto-asset markets in Vietnam: Tax policy and pricing responses on peer-to-peer markets',
+  ],
+  programming: [
+    {
+      id: 'rafetus',
+      title: { vi: 'Rafetus', en: 'Rafetus' },
+      blurb: {
+        vi: 'Ứng dụng quản lý tài liệu tích hợp trí tuệ nhân tạo',
+        en: 'AI-powered document management application',
+      },
+      href: techPost('rafetus'),
+      icon: asset('covers/rafetus.jpg'),
+      badge: { vi: 'Ứng dụng', en: 'App' },
     },
-    blurb: {
-      vi: 'Hội thảo Khoa học Quốc gia: Khơi thông và sử dụng hiệu quả các nguồn lực cho phát triển kinh tế trong kỷ nguyên mới của Việt Nam',
-      en: 'National Scientific Conference: Mobilising and using resources for economic development in Vietnam’s new era',
+    {
+      id: 'terminal-trade',
+      title: { vi: 'Terminal Trade', en: 'Terminal Trade' },
+      blurb: {
+        vi: 'Ứng dụng nghiên cứu và phân tích thị trường tài chính',
+        en: 'Financial market research and analysis app',
+      },
+      href: techPost('terminal-trade'),
+      icon: asset('covers/terminal-trade.png'),
+      badge: { vi: 'Ứng dụng', en: 'App' },
     },
-    href: 'https://www.researchgate.net/publication/415322921_Khoi_thong_nguon_luc_tai_chinh_tu_thi_truong_tai_san_ma_hoa_tai_Viet_Nam_Chinh_sach_thue_va_phan_ung_dinh_gia_tren_thi_truong_giao_dich_ngang_hang',
-    badge: { vi: '2026: Bài hội thảo', en: '2026: Conference paper' },
-    kind: 'paper',
-  },
-  {
-    id: 'ecommerce-informal-employment',
-    title: {
-      vi: 'Tác động của phát triển thương mại điện tử đến tỷ lệ lao động có việc làm phi chính thức tại Việt Nam',
-      en: 'The impact of e-commerce development on informal employment rates in Vietnam',
+    {
+      id: 'retro-typewriter-cyberdeck',
+      title: {
+        vi: 'Retro Typewriter Cyberdeck',
+        en: 'Retro Typewriter Cyberdeck',
+      },
+      blurb: {
+        vi: 'Máy tính di động tự lắp ráp dùng Raspberry Pi 5',
+        en: 'DIY portable computer built on Raspberry Pi 5',
+      },
+      href: techPost('retro-typewriter-cyberdeck'),
+      icon: asset('covers/cyberdeck.jpg'),
+      badge: { vi: 'Phần cứng', en: 'Hardware' },
     },
-    blurb: {
-      vi: 'Hội thảo Khoa học Quốc gia: Phát triển kinh tế số và nâng cao năng lực cạnh tranh của nền kinh tế',
-      en: 'National Scientific Conference: Digital economy development and competitiveness',
+    {
+      id: 'ticker',
+      title: { vi: 'TICKER', en: 'TICKER' },
+      blurb: {
+        vi: 'Trò chơi cờ chứng khoán nhiều người chơi',
+        en: 'Multiplayer stock-market board game',
+      },
+      href: techPost('ticker'),
+      icon: asset('covers/ticker.jpg'),
+      badge: { vi: 'Game', en: 'Game' },
     },
-    href: 'https://www.researchgate.net/publication/415164795_Tac_dong_cua_phat_trien_thuong_mai_dien_tu_den_ty_le_lao_dong_co_viec_lam_phi_chinh_thuc_tai_Viet_Nam',
-    badge: { vi: '2026: Bài hội thảo', en: '2026: Conference paper' },
-    kind: 'paper',
-  },
-]
+  ],
+  music: [
+    {
+      id: 'beats-youtube',
+      title: { vi: 'Beats on YouTube', en: 'Beats on YouTube' },
+      blurb: {
+        vi: 'Kênh beats và sản xuất nhạc',
+        en: 'Beats and music production channel',
+      },
+      href: musicPost('beats-youtube'),
+      icon: asset('covers/music.jpg'),
+      badge: { vi: 'Music', en: 'Music' },
+    },
+  ],
+}
 
 const STORAGE_KEY = 'letrinhan-site-locale'
 

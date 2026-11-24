@@ -56,23 +56,31 @@ html {
   scroll-padding-top: 4.5rem;
 }
 
+html {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
 html,
 body,
 #root {
   margin: 0;
   width: 100%;
+  max-width: 100%;
   min-height: 100%;
 }
 
 body {
   min-height: 100vh;
-  overflow-x: hidden;
+  overflow-x: clip;
   background: var(--page-bg);
   color: var(--page-fg);
 }
 
 #root {
   display: block;
+  overflow-x: clip;
 }
 
 a {

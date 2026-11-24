@@ -21,8 +21,11 @@ const GLYPHS = [
   '^',
 ]
 
-const CELL = 18
-const FONT = '10px ui-monospace, "SF Mono", Menlo, Consolas, monospace'
+/** Larger cells = fewer fillText calls (main cost). */
+const CELL = 28
+const FONT = '11px ui-monospace, "SF Mono", Menlo, Consolas, monospace'
+/** ~12 fps — enough for the scan bar, cheap on battery/CPU */
+const FRAME_MS = 80
 
 function fillGrid(cols: number, rows: number, seed: number): string[] {
   const cells: string[] = new Array(cols * rows)
@@ -40,7 +43,7 @@ export function GlyphField() {
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
-    const ctx = canvas.getContext('2d')
+    const ctx = canvas.getContext('2d', { alpha: true })
     if (!ctx) return
 
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)')
@@ -58,6 +61,7 @@ export function GlyphField() {
     let pointerCol = -1
     let last = 0
     let running = true
+    let visible = document.visibilityState === 'visible'
 
     const paintBase = () => {
       if (!base) return
@@ -70,24 +74,22 @@ export function GlyphField() {
       bctx.textBaseline = 'middle'
       bctx.fillStyle = 'rgba(201, 182, 176, 0.09)'
       for (let y = 0; y < rows; y++) {
+        const yy = y * CELL + CELL * 0.5
+        const row = y * cols
         for (let x = 0; x < cols; x++) {
-          bctx.fillText(
-            glyphs[y * cols + x],
-            x * CELL + CELL * 0.5,
-            y * CELL + CELL * 0.5,
-          )
+          bctx.fillText(glyphs[row + x], x * CELL + CELL * 0.5, yy)
         }
       }
     }
 
     const resize = () => {
-      dpr = Math.min(window.devicePixelRatio || 1, 2)
-      width = window.innerWidth
-      height = window.innerHeight
+      dpr = Math.min(window.devicePixelRatio || 1, 1.25)
+      width = document.documentElement.clientWidth || window.innerWidth
+      height = document.documentElement.clientHeight || window.innerHeight
       canvas.width = Math.floor(width * dpr)
       canvas.height = Math.floor(height * dpr)
-      canvas.style.width = `${width}px`
-      canvas.style.height = `${height}px`
+      canvas.style.width = ''
+      canvas.style.height = ''
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
 
       cols = Math.ceil(width / CELL) + 1
@@ -102,29 +104,13 @@ export function GlyphField() {
       draw(performance.now())
     }
 
-    const drawColumn = (
-      x: number,
-      color: string,
-      now: number,
-      pulse: boolean,
-    ) => {
+    const drawColumn = (x: number, color: string) => {
       if (x < 0 || x >= cols) return
-      ctx.font = FONT
-      ctx.textAlign = 'center'
-      ctx.textBaseline = 'middle'
       ctx.fillStyle = color
-      const t = now * 0.001
+      const xx = x * CELL + CELL * 0.5
       for (let y = 0; y < rows; y++) {
-        if (pulse) {
-          ctx.globalAlpha = 0.75 + 0.25 * Math.sin(t * 5.5 + y * 0.4)
-        }
-        ctx.fillText(
-          glyphs[y * cols + x],
-          x * CELL + CELL * 0.5,
-          y * CELL + CELL * 0.5,
-        )
+        ctx.fillText(glyphs[y * cols + x], xx, y * CELL + CELL * 0.5)
       }
-      ctx.globalAlpha = 1
     }
 
     const draw = (now: number) => {
@@ -134,22 +120,25 @@ export function GlyphField() {
       ctx.drawImage(base, 0, 0)
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
 
-      const t = now * 0.001
+      ctx.font = FONT
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+
       if (!reduce.matches) {
-        scanCol = Math.floor(((t * 2.2) % cols) + cols) % cols
+        scanCol = Math.floor(((now * 0.0022) % cols) + cols) % cols
       }
 
       const hot = pointerCol >= 0 ? pointerCol : scanCol
-      drawColumn(hot - 2, 'rgba(201, 182, 176, 0.16)', now, false)
-      drawColumn(hot - 1, 'rgba(196, 163, 90, 0.32)', now, false)
-      drawColumn(hot, 'rgba(224, 197, 122, 0.72)', now, !reduce.matches)
-      drawColumn(hot + 1, 'rgba(196, 163, 90, 0.32)', now, false)
-      drawColumn(hot + 2, 'rgba(201, 182, 176, 0.16)', now, false)
+      drawColumn(hot - 2, 'rgba(201, 182, 176, 0.16)')
+      drawColumn(hot - 1, 'rgba(196, 163, 90, 0.32)')
+      drawColumn(hot, 'rgba(224, 197, 122, 0.72)')
+      drawColumn(hot + 1, 'rgba(196, 163, 90, 0.32)')
+      drawColumn(hot + 2, 'rgba(201, 182, 176, 0.16)')
     }
 
     const tick = (now: number) => {
       if (!running) return
-      if (now - last > 48) {
+      if (visible && !reduce.matches && now - last >= FRAME_MS) {
         last = now
         draw(now)
       }
@@ -157,7 +146,7 @@ export function GlyphField() {
     }
 
     const onMove = (event: PointerEvent) => {
-      if (!fine.matches) return
+      if (!fine.matches || !visible) return
       pointerCol = Math.floor(event.clientX / CELL)
     }
 
@@ -165,18 +154,35 @@ export function GlyphField() {
       pointerCol = -1
     }
 
+    const onVisibility = () => {
+      visible = document.visibilityState === 'visible'
+      if (visible && !reduce.matches && !frame) {
+        last = 0
+        frame = requestAnimationFrame(tick)
+      }
+    }
+
+    let resizeTimer = 0
+    const onResize = () => {
+      window.clearTimeout(resizeTimer)
+      resizeTimer = window.setTimeout(resize, 120)
+    }
+
     resize()
-    window.addEventListener('resize', resize)
+    window.addEventListener('resize', onResize)
     window.addEventListener('pointermove', onMove, { passive: true })
     window.addEventListener('pointerleave', onLeave)
+    document.addEventListener('visibilitychange', onVisibility)
     if (!reduce.matches) frame = requestAnimationFrame(tick)
 
     return () => {
       running = false
       cancelAnimationFrame(frame)
-      window.removeEventListener('resize', resize)
+      window.clearTimeout(resizeTimer)
+      window.removeEventListener('resize', onResize)
       window.removeEventListener('pointermove', onMove)
       window.removeEventListener('pointerleave', onLeave)
+      document.removeEventListener('visibilitychange', onVisibility)
     }
   }, [])
 

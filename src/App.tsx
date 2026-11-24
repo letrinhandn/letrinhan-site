@@ -2,20 +2,19 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { BrandIcon, type IconKey } from './BrandIcon'
 import { GlyphField } from './GlyphField'
 import {
-  appWorks,
   applyTheme,
   detectLocale,
   detectTheme,
-  electronicsWorks,
-  gameWorks,
+  isLocalHost,
   notebookNav,
   resolveSiteHref,
-  researchWorks,
+  sectionFeatures,
   storeLocale,
   storeTheme,
   ui,
   type Locale,
   type LocalizedWork,
+  type SectionId,
   type Theme,
 } from './i18n'
 import './App.css'
@@ -29,6 +28,12 @@ type SiteLink = {
   blurb: Record<Locale, string>
 }
 
+type SocialGroup = {
+  id: SectionId
+  title: { readonly vi: string; readonly en: string }
+  links: SiteLink[]
+}
+
 type Work = {
   id: string
   title: string
@@ -40,55 +45,16 @@ type Work = {
   kind?: 'paper' | 'book'
 }
 
-type WorkSection = {
-  id: string
-  title: string
-  items: Work[]
-}
-
-const links: SiteLink[] = [
+const heroLinks: SiteLink[] = [
   {
-    label: 'Bluesky',
-    href: 'https://bsky.app/profile/comrade-letrinhan.bsky.social',
-    icon: 'bluesky',
-    handle: '@comrade-letrinhan',
-    accent: '#0085ff',
+    label: 'Facebook',
+    href: 'https://web.facebook.com/profile.php?id=100023079422663',
+    icon: 'facebook',
+    handle: 'profile',
+    accent: '#1877f2',
     blurb: {
-      vi: 'Chia sẻ nhanh về nghiên cứu và quan điểm.',
-      en: 'Short posts on research and ideas.',
-    },
-  },
-  {
-    label: 'X',
-    href: 'https://x.com/comrade_lenhan',
-    icon: 'x',
-    handle: '@comrade_lenhan',
-    accent: '#e7e9ea',
-    blurb: {
-      vi: 'Cập nhật nhanh và thảo luận công khai.',
-      en: 'Quick updates and public discussion.',
-    },
-  },
-  {
-    label: 'Substack',
-    href: 'https://letrinhannotebooks.substack.com/',
-    icon: 'substack',
-    handle: '@comradeletrinhan',
-    accent: '#ff6719',
-    blurb: {
-      vi: 'Bài viết dài và ghi chú định kỳ.',
-      en: 'Essays and periodic notes.',
-    },
-  },
-  {
-    label: 'YouTube',
-    href: 'https://www.youtube.com/@beatsprodbynhan8026',
-    icon: 'youtube',
-    handle: '@beatsprodbynhan8026',
-    accent: '#ff0000',
-    blurb: {
-      vi: 'Beats và sản xuất nhạc.',
-      en: 'Beats and music production.',
+      vi: 'Kết nối cá nhân và cộng đồng.',
+      en: 'Personal and community updates.',
     },
   },
   {
@@ -103,96 +69,181 @@ const links: SiteLink[] = [
     },
   },
   {
-    label: 'GitHub',
-    href: 'https://github.com/letrinhandn',
-    icon: 'github',
-    handle: '@letrinhandn',
-    accent: '#f0f6fc',
+    label: 'X',
+    href: 'https://x.com/comrade_lenhan',
+    icon: 'x',
+    handle: '@comrade_lenhan',
+    accent: '#e7e9ea',
     blurb: {
-      vi: 'Code công khai về phần mềm và nghiên cứu.',
-      en: 'Public software and research code.',
-    },
-  },
-  {
-    label: 'itch.io',
-    href: 'https://comrade-lenan.itch.io/',
-    icon: 'itch',
-    handle: 'comrade-lenan',
-    accent: '#fa5c5c',
-    blurb: {
-      vi: 'Game và dự án sáng tạo.',
-      en: 'Games and creative projects.',
-    },
-  },
-  {
-    label: 'ORCID',
-    href: 'https://orcid.org/0009-0004-6075-4119',
-    icon: 'orcid',
-    handle: '0009-0004-6075-4119',
-    accent: '#a6ce39',
-    blurb: {
-      vi: 'Định danh học thuật và công bố.',
-      en: 'Academic identity and publications.',
-    },
-  },
-  {
-    label: 'Google Scholar',
-    href: 'https://scholar.google.com/citations?user=L7xNHUAAAAAJ&hl=en',
-    icon: 'googlescholar',
-    handle: 'L7xNHUAAAAAJ',
-    accent: '#4285f4',
-    blurb: {
-      vi: 'Trích dẫn và danh mục công bố.',
-      en: 'Citations and publication list.',
-    },
-  },
-  {
-    label: 'Facebook',
-    href: 'https://web.facebook.com/profile.php?id=100023079422663',
-    icon: 'facebook',
-    handle: 'profile',
-    accent: '#1877f2',
-    blurb: {
-      vi: 'Kết nối cá nhân và cộng đồng.',
-      en: 'Personal and community updates.',
-    },
-  },
-  {
-    label: 'Hugging Face',
-    href: 'https://huggingface.co/letrinhan',
-    icon: 'huggingface',
-    handle: '@letrinhan',
-    accent: '#ffd21e',
-    blurb: {
-      vi: 'Model, dataset và demo AI.',
-      en: 'AI models, datasets, and demos.',
-    },
-  },
-  {
-    label: 'QuantConnect',
-    href: 'https://www.quantconnect.com/u/nhan_1',
-    icon: 'quantconnect',
-    handle: '@nhan_1',
-    accent: '#f5a623',
-    blurb: {
-      vi: 'Backtest và chiến lược trên LEAN.',
-      en: 'LEAN backtests and trading strategies.',
-    },
-  },
-  {
-    label: 'CrunchDAO',
-    href: 'https://hub.crunchdao.com/users/comradelenan',
-    icon: 'crunchdao',
-    handle: '@comradelenan',
-    accent: '#e8e8e8',
-    blurb: {
-      vi: 'Cuộc thi dữ liệu và mô hình trên CrunchDAO.',
-      en: 'Data competitions and models on CrunchDAO.',
+      vi: 'Cập nhật nhanh và thảo luận công khai.',
+      en: 'Quick updates and public discussion.',
     },
   },
 ]
 
-const featuredIds = ['rafetus'] as const
+const socialGroups: SocialGroup[] = [
+  {
+    id: 'research',
+    title: ui.socialResearch,
+    links: [
+      {
+        label: 'Bluesky',
+        href: 'https://bsky.app/profile/comrade-letrinhan.bsky.social',
+        icon: 'bluesky',
+        handle: '@comrade-letrinhan',
+        accent: '#0085ff',
+        blurb: {
+          vi: 'Chia sẻ nhanh về nghiên cứu và quan điểm.',
+          en: 'Short posts on research and ideas.',
+        },
+      },
+      {
+        label: 'Substack',
+        href: 'https://letrinhannotebooks.substack.com/',
+        icon: 'substack',
+        handle: '@comradeletrinhan',
+        accent: '#ff6719',
+        blurb: {
+          vi: 'Bài viết dài và ghi chú định kỳ.',
+          en: 'Essays and periodic notes.',
+        },
+      },
+      {
+        label: 'ORCID',
+        href: 'https://orcid.org/0009-0004-6075-4119',
+        icon: 'orcid',
+        handle: '0009-0004-6075-4119',
+        accent: '#a6ce39',
+        blurb: {
+          vi: 'Định danh học thuật và công bố.',
+          en: 'Academic identity and publications.',
+        },
+      },
+      {
+        label: 'Google Scholar',
+        href: 'https://scholar.google.com/citations?user=L7xNHUAAAAAJ&hl=en',
+        icon: 'googlescholar',
+        handle: 'L7xNHUAAAAAJ',
+        accent: '#4285f4',
+        blurb: {
+          vi: 'Trích dẫn và danh mục công bố.',
+          en: 'Citations and publication list.',
+        },
+      },
+    ],
+  },
+  {
+    id: 'philosophy',
+    title: ui.socialPhilosophy,
+    links: [],
+  },
+  {
+    id: 'economic',
+    title: ui.socialEconomic,
+    links: [
+      {
+        label: 'QuantConnect',
+        href: 'https://www.quantconnect.com/u/nhan_1',
+        icon: 'quantconnect',
+        handle: '@nhan_1',
+        accent: '#f5a623',
+        blurb: {
+          vi: 'Backtest và chiến lược trên LEAN.',
+          en: 'LEAN backtests and trading strategies.',
+        },
+      },
+      {
+        label: 'CrunchDAO',
+        href: 'https://hub.crunchdao.com/users/comradelenan',
+        icon: 'crunchdao',
+        handle: '@comradelenan',
+        accent: '#e8e8e8',
+        blurb: {
+          vi: 'Cuộc thi dữ liệu và mô hình trên CrunchDAO.',
+          en: 'Data competitions and models on CrunchDAO.',
+        },
+      },
+      {
+        label: 'Numerai',
+        href: 'https://signals.numer.ai/comrade_letrinhan',
+        icon: 'numerai',
+        handle: '@comrade_letrinhan',
+        accent: '#7c3aed',
+        blurb: {
+          vi: 'Numerai Signals — mô hình dự đoán thị trường.',
+          en: 'Numerai Signals — market prediction models.',
+        },
+      },
+      {
+        label: 'WorldQuant BRAIN',
+        href: 'https://platform.worldquantbrain.com/profile/public/NL70332',
+        icon: 'worldquant',
+        handle: 'NL70332',
+        accent: '#00c2ff',
+        blurb: {
+          vi: 'Hồ sơ WorldQuant BRAIN công khai.',
+          en: 'Public WorldQuant BRAIN profile.',
+        },
+      },
+    ],
+  },
+  {
+    id: 'programming',
+    title: ui.socialProgramming,
+    links: [
+      {
+        label: 'GitHub',
+        href: 'https://github.com/letrinhandn',
+        icon: 'github',
+        handle: '@letrinhandn',
+        accent: '#f0f6fc',
+        blurb: {
+          vi: 'Code công khai về phần mềm và nghiên cứu.',
+          en: 'Public software and research code.',
+        },
+      },
+      {
+        label: 'Hugging Face',
+        href: 'https://huggingface.co/letrinhan',
+        icon: 'huggingface',
+        handle: '@letrinhan',
+        accent: '#ffd21e',
+        blurb: {
+          vi: 'Model, dataset và demo AI.',
+          en: 'AI models, datasets, and demos.',
+        },
+      },
+      {
+        label: 'itch.io',
+        href: 'https://comrade-lenan.itch.io/',
+        icon: 'itch',
+        handle: 'comrade-lenan',
+        accent: '#fa5c5c',
+        blurb: {
+          vi: 'Game và dự án sáng tạo.',
+          en: 'Games and creative projects.',
+        },
+      },
+    ],
+  },
+  {
+    id: 'music',
+    title: ui.socialMusic,
+    links: [
+      {
+        label: 'YouTube',
+        href: 'https://www.youtube.com/@beatsprodbynhan8026',
+        icon: 'youtube',
+        handle: '@beatsprodbynhan8026',
+        accent: '#ff0000',
+        blurb: {
+          vi: 'Beats và sản xuất nhạc.',
+          en: 'Beats and music production.',
+        },
+      },
+    ],
+  },
+]
 
 function localizeWork(work: LocalizedWork, locale: Locale): Work {
   return {
@@ -344,12 +395,14 @@ function WorkCard({
   pinned?: boolean
   compact?: boolean
 }) {
+  const external =
+    /^https?:\/\//i.test(work.href) &&
+    !/^https?:\/\/(127\.0\.0\.1|localhost)(:|\/|$)/i.test(work.href)
   return (
     <a
       className={`work-link${pinned ? ' is-pinned' : ''}${compact ? ' is-compact' : ''}`}
       href={work.href}
-      target="_blank"
-      rel="noreferrer noopener"
+      {...(external ? { target: '_blank', rel: 'noreferrer noopener' } : {})}
     >
       <WorkVisual work={work} />
       <span className="work-copy">
@@ -378,6 +431,7 @@ function LangToggle({
       title={ui.langSwitch[locale]}
       onClick={() => onChange(next)}
     >
+      {/* Current language — matches visible copy (VI ↔ EN) */}
       {locale === 'vi' ? 'VI' : 'EN'}
     </button>
   )
@@ -427,12 +481,30 @@ function ThemeToggle({
   )
 }
 
+function MenuIcon({ open }: { open: boolean }) {
+  return open ? (
+    <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2.2">
+      <path strokeLinecap="square" d="M6 6l12 12M18 6L6 18" />
+    </svg>
+  ) : (
+    <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2.2">
+      <path strokeLinecap="square" d="M4 7h16M4 12h16M4 17h16" />
+    </svg>
+  )
+}
+
 export default function App() {
   const [ready, setReady] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
   const [locale, setLocale] = useState<Locale>(() => detectLocale())
   const [theme, setTheme] = useState<Theme>(() => detectTheme())
   const siteRef = useRef<HTMLDivElement>(null)
   const headerRef = useRef<HTMLElement>(null)
+  const menuOpenRef = useRef(false)
+
+  useEffect(() => {
+    menuOpenRef.current = menuOpen
+  }, [menuOpen])
 
   useEffect(() => {
     const id = requestAnimationFrame(() => setReady(true))
@@ -451,7 +523,22 @@ export default function App() {
     applyTheme(theme)
   }, [theme])
 
-  // Drive --p from scroll so logo scale + nav gap shrink in lockstep.
+  // Close drawer on Escape; lock page scroll while open
+  useEffect(() => {
+    if (!menuOpen) return
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setMenuOpen(false)
+    }
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    window.addEventListener('keydown', onKey)
+    return () => {
+      document.body.style.overflow = prev
+      window.removeEventListener('keydown', onKey)
+    }
+  }, [menuOpen])
+
+  // Drive --p from scroll so logo scale shrinks in lockstep.
   useEffect(() => {
     const header = headerRef.current
     if (!header) return
@@ -466,6 +553,7 @@ export default function App() {
     const onScroll = () => {
       if (frame) return
       frame = requestAnimationFrame(sync)
+      if (menuOpenRef.current) setMenuOpen(false)
     }
     // pageshow covers bfcache Back from labs (Finance/Tech/…)
     const onPageShow = () => {
@@ -484,7 +572,7 @@ export default function App() {
     }
   }, [])
 
-  // Desktop-only cursor spotlight on the burgundy backdrop.
+  // Desktop-only cursor spotlight — throttled to avoid layout thrash.
   useEffect(() => {
     const root = siteRef.current
     if (!root) return
@@ -492,13 +580,17 @@ export default function App() {
     if (!fine.matches) return
 
     let frame = 0
+    let last = 0
     const onMove = (event: PointerEvent) => {
+      const now = performance.now()
+      if (now - last < 50) return
+      last = now
       cancelAnimationFrame(frame)
       frame = requestAnimationFrame(() => {
         const x = (event.clientX / window.innerWidth) * 100
         const y = (event.clientY / window.innerHeight) * 100
-        root.style.setProperty('--mx', `${x.toFixed(2)}%`)
-        root.style.setProperty('--my', `${y.toFixed(2)}%`)
+        root.style.setProperty('--mx', `${x.toFixed(1)}%`)
+        root.style.setProperty('--my', `${y.toFixed(1)}%`)
       })
     }
 
@@ -509,53 +601,29 @@ export default function App() {
     }
   }, [])
 
-  const workSections = useMemo((): WorkSection[] => {
-    const apps = appWorks.map((work) => localizeWork(work, locale))
-    const electronics = electronicsWorks.map((work) =>
-      localizeWork(work, locale),
-    )
-    const games = gameWorks.map((work) => localizeWork(work, locale))
-    const research = researchWorks.map((work) => localizeWork(work, locale))
-    const catalog = [...apps, ...electronics, ...games, ...research]
-
-    return [
-      {
-        id: 'featured',
-        title: ui.featured[locale],
-        items: featuredIds.map((id) => {
-          const work = catalog.find((item) => item.id === id)
-          if (!work) throw new Error(`Featured work missing: ${id}`)
-          return work
-        }),
-      },
-      {
-        id: 'apps',
-        title: ui.apps[locale],
-        items: apps,
-      },
-      {
-        id: 'electronics',
-        title: ui.electronics[locale],
-        items: electronics,
-      },
-      {
-        id: 'games',
-        title: ui.games[locale],
-        items: games,
-      },
-      {
-        id: 'researches',
-        title: ui.research[locale],
-        items: research,
-      },
-    ]
+  const featuresBySection = useMemo(() => {
+    const map = {} as Record<SectionId, Work[]>
+    for (const id of Object.keys(sectionFeatures) as SectionId[]) {
+      map[id] = sectionFeatures[id].map((work) => localizeWork(work, locale))
+    }
+    return map
   }, [locale])
+
+  const gated = !isLocalHost()
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('is-gated', gated)
+    return () => {
+      document.documentElement.classList.remove('is-gated')
+    }
+  }, [gated])
 
   return (
     <div
       ref={siteRef}
-      className={`site${ready ? ' is-ready' : ''}`}
+      className={`site${ready ? ' is-ready' : ''}${gated ? ' is-gated' : ''}`}
       data-theme={theme}
+      {...(gated ? ({ inert: true } as object) : null)}
     >
       <GlyphField />
       <div className="cursor-glow" aria-hidden="true" />
@@ -563,24 +631,18 @@ export default function App() {
 
       <header ref={headerRef} className="site-header" style={{ ['--p' as string]: 0 }}>
         <div className="site-header-bar">
-          <nav className="site-nav site-nav-left" aria-label={ui.notebooks[locale]}>
-            <a
-              className="site-nav-link"
-              href={resolveSiteHref(notebookNav[0].href)}
-              title={notebookNav[0].title[locale]}
-            >
-              {notebookNav[0].nav[locale]}
-            </a>
-            <a
-              className="site-nav-link"
-              href={resolveSiteHref(notebookNav[1].href)}
-              title={notebookNav[1].title[locale]}
-            >
-              {notebookNav[1].nav[locale]}
-            </a>
-          </nav>
+          <button
+            type="button"
+            className="header-chip is-icon site-menu-btn"
+            aria-expanded={menuOpen}
+            aria-controls="site-drawer"
+            aria-label={menuOpen ? ui.menuClose[locale] : ui.menuOpen[locale]}
+            title={menuOpen ? ui.menuClose[locale] : ui.menuOpen[locale]}
+            onClick={() => setMenuOpen((open) => !open)}
+          >
+            <MenuIcon open={menuOpen} />
+          </button>
 
-          <div className="site-logo-slot" aria-hidden="true" />
           <a
             className="site-logo"
             href={`${import.meta.env.BASE_URL}`}
@@ -596,24 +658,54 @@ export default function App() {
             />
           </a>
 
-          <nav className="site-nav site-nav-right" aria-label={ui.notebooks[locale]}>
-            <a
-              className="site-nav-link"
-              href={resolveSiteHref(notebookNav[2].href)}
-              title={notebookNav[2].title[locale]}
-            >
-              {notebookNav[2].nav[locale]}
-            </a>
-            <a
-              className="site-nav-link"
-              href={resolveSiteHref(notebookNav[3].href)}
-              title={notebookNav[3].title[locale]}
-            >
-              {notebookNav[3].nav[locale]}
-            </a>
-          </nav>
+          <div className="site-controls">
+            <ThemeToggle theme={theme} locale={locale} onChange={setTheme} />
+            <LangToggle locale={locale} onChange={setLocale} />
+          </div>
         </div>
       </header>
+
+      <div
+        className={`site-drawer-layer${menuOpen ? ' is-open' : ''}`}
+        aria-hidden={!menuOpen}
+      >
+        <button
+          type="button"
+          className="site-drawer-backdrop"
+          tabIndex={menuOpen ? 0 : -1}
+          aria-label={ui.menuClose[locale]}
+          onClick={() => setMenuOpen(false)}
+        />
+        <nav
+          id="site-drawer"
+          className="site-drawer"
+          aria-label={ui.notebooks[locale]}
+          {...(!menuOpen ? ({ inert: true } as object) : null)}
+        >
+          <p className="site-drawer-label">{ui.notebooks[locale]}</p>
+          {notebookNav.map((item) => {
+            const href = resolveSiteHref(item.href)
+            const external =
+              /^https?:\/\//i.test(href) &&
+              !/^https?:\/\/(127\.0\.0\.1|localhost)(:|\/|$)/i.test(href)
+            return (
+              <a
+                key={item.id}
+                className="site-drawer-link"
+                href={href}
+                title={item.title[locale]}
+                tabIndex={menuOpen ? 0 : -1}
+                {...(external || !isLocalHost()
+                  ? { target: '_blank', rel: 'noopener noreferrer' }
+                  : {})}
+                onClick={() => setMenuOpen(false)}
+              >
+                {item.nav[locale]}
+              </a>
+            )
+          })}
+        </nav>
+      </div>
 
       <div className="shell">
         <main className="page">
@@ -621,46 +713,50 @@ export default function App() {
             <h1 className="hero-name">
               {locale === 'vi' ? 'Lê Trí Nhân' : 'Le Tri Nhan'}
             </h1>
-            <nav className="social" aria-label={ui.profiles[locale]}>
-              {links.map((link) => (
+            <nav className="social hero-social" aria-label={ui.socialSocial[locale]}>
+              {heroLinks.map((link) => (
                 <SocialLink key={link.label} link={link} locale={locale} />
               ))}
             </nav>
           </header>
 
-          <div className="works">
-            {workSections.map((section) => (
+          <div className="social-groups" aria-label={ui.profiles[locale]}>
+            {socialGroups.map((group) => (
               <section
-                key={section.id}
-                className={`work-section${section.id === 'featured' ? ' is-featured' : ' is-rail'}`}
-                aria-labelledby={`${section.id}-title`}
+                key={group.id}
+                className="social-group"
+                aria-labelledby={`social-${group.id}-title`}
               >
-                <h2 id={`${section.id}-title`} className="section-label">
-                  {section.title}
-                </h2>
-                <ul className="work-list">
-                  {section.items.map((work) => (
-                    <li key={`${section.id}-${work.id}`}>
-                      <WorkCard
-                        work={work}
-                        pinned={section.id === 'featured'}
-                        compact={section.id !== 'featured'}
-                      />
-                    </li>
-                  ))}
-                </ul>
+                <div className="social-group-head">
+                  <h2 id={`social-${group.id}-title`} className="section-label">
+                    {group.title[locale]}
+                  </h2>
+                  {group.links.length > 0 ? (
+                    <nav className="social" aria-label={group.title[locale]}>
+                      {group.links.map((link) => (
+                        <SocialLink
+                          key={link.label}
+                          link={link}
+                          locale={locale}
+                        />
+                      ))}
+                    </nav>
+                  ) : null}
+                </div>
+                {featuresBySection[group.id].length > 0 ? (
+                  <ul className="work-list feature-grid">
+                    {featuresBySection[group.id].map((work) => (
+                      <li key={work.id}>
+                        <WorkCard work={work} pinned compact />
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
               </section>
             ))}
           </div>
         </main>
       </div>
-
-      <footer className="site-footer">
-        <div className="site-controls">
-          <ThemeToggle theme={theme} locale={locale} onChange={setTheme} />
-          <LangToggle locale={locale} onChange={setLocale} />
-        </div>
-      </footer>
     </div>
   )
 }

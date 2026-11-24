@@ -21,8 +21,50 @@
         } catch (e) {
           document.documentElement.dataset.theme = 'dark'
         }
+
+        /* Production gate — full site only on localhost */
+        var host = location.hostname
+        if (host !== 'localhost' && host !== '127.0.0.1') {
+          document.documentElement.classList.add('is-gated')
+        }
       })()
     </script>
+    <style>
+      html.is-gated,
+      html.is-gated body {
+        overflow: hidden !important;
+      }
+      html.is-gated #root {
+        filter: blur(18px) saturate(0.7);
+        pointer-events: none !important;
+        user-select: none !important;
+      }
+      html.is-gated::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        z-index: 2147483646;
+        background: rgba(20, 4, 6, 0.55);
+        pointer-events: auto;
+      }
+      html.is-gated::after {
+        content: 'hiding from the internet';
+        position: fixed;
+        inset: 0;
+        z-index: 2147483647;
+        display: grid;
+        place-items: center;
+        margin: 0;
+        padding: 1.5rem;
+        font-family: 'Be Vietnam Pro', system-ui, sans-serif;
+        font-size: clamp(0.95rem, 2.8vw, 1.15rem);
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        color: #f2e8e4;
+        text-align: center;
+        pointer-events: none;
+      }
+    </style>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
